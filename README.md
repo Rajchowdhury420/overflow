@@ -60,7 +60,7 @@ Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac
 ```
 
 ### 2.3. Finding Bad Characters
-You can use this tool to send every character from 0x01 to 0xFF to the target
+You can use this tool to send every character from 0x00 to 0xFF to the target
 service. It's only real use is to discover bad characters (e.g. characters that
 the service treats differently in execution).
 
@@ -70,8 +70,15 @@ are bad is up to you.
 
 ```
 $ overflow badchars 127.0.0.1 4444 -o 160
-    ───> Sending all characters to target.
-Done! Finished sending all characters to target.
+    ───> Sending characters to target.
+Done! Finished sending characters to target.
+```
+
+You can also exclude particular characters from the payload sent to the target.
+```
+$ overflow badchars 127.0.0.1 4444 -o 160 -e "\x00\x05\x1A"
+    ───> Sending characters to target.
+Done! Finished sending characters to target.
 ```
 
 ### 2.4. Running an Exploit

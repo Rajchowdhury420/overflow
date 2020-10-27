@@ -18,9 +18,10 @@ data Command =
             , length :: Int
             , affix  :: (Maybe Text, Maybe Text) } |
     -- ...
-    BadChars { host   :: Host
-             , offset :: Int
-             , affix  :: (Maybe Text, Maybe Text) } |
+    BadChars { host    :: Host
+             , offset  :: Int
+             , exclude :: Maybe Text
+             , affix   :: (Maybe Text, Maybe Text) } |
     -- ...
     Exploit { host    :: Host 
             , offset  :: Int
@@ -44,10 +45,10 @@ parseHost = Host <$> addr <*> port
 parseAffix :: Parser (Maybe Text, Maybe Text)
 parseAffix = (,) <$> prefix <*> suffix
     where
-        prefix = optional
-            (optText "prefix" 'p' "(optional) Prefix to put before payload")
-        suffix = optional
-            (optText "suffix" 's' "(optional) Suffix to put after payload")
+        prefix = optional $
+            optText "prefix" 'p' "(optional) Prefix to put before payload"
+        suffix = optional $
+            optText "suffix" 's' "(optional) Suffix to put after payload"
 
 -- ...
 fuzz :: Parser Command
@@ -63,9 +64,11 @@ pattern = Pattern <$> parseHost <*> length <*> parseAffix
 
 -- ...
 badchars :: Parser Command
-badchars = BadChars <$> parseHost <*> offset <*> parseAffix
+badchars = BadChars <$> parseHost <*> offset <*> exclude <*> parseAffix
     where
         offset  = optInt "offset" 'o' "The offset of the EIP register"
+        exclude = optional $
+            optText "exclude" 'e' "(optional) Characters to exclude in payload" 
 
 -- ...
 exploit :: Parser Command
@@ -84,14 +87,14 @@ parser :: Parser Command
 parser = subcommandGroup "Available commands:"
     [ ("fuzz", "Finds the approximate length of the buffer.", fuzz)
     , ("pattern", "Sends a cyclic pattern of bytes of specified length", pattern) 
-    , ("badchars", "Sends every character from 0x01 to 0xFF", badchars)
+    , ("badchars", "Sends every character from 0x00 to 0xFF", badchars)
     , ("exploit", "Attempts to execute a specified payload on target", exploit) ]
 
 -- ...
 run :: Command -> IO ()
 run (Fuzz h i a)        = runFuzzer h i a
 run (Pattern h l a)     = sendPattern h l a 
-run (BadChars h o a)    = sendBadChars h o a 
+run (BadChars h o e a)  = sendBadChars h o e a 
 run (Exploit _ _ _ _ _) = putStrLn "Exploit..."
 
 main :: IO ()

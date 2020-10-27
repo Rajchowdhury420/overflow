@@ -10,6 +10,7 @@ import qualified Data.ByteString.Char8     as Char8
 import           Data.Text                 (Text, unpack)
 import           Network.Socket
 import           Network.Socket.ByteString (recv, sendAll)
+import           System.Timeout
 
 -- |...
 data Host =
@@ -37,7 +38,9 @@ sendPayload (Host a p) x = withSocketsDo $ do
             sock <- openSocket addr
             connect sock $ addrAddress addr
             sendAll sock (Char8.pack x)
-            _ <- recv sock 1024
-            pure True
+            tmp <- timeout 5000000 (recv sock 1024) -- 3s
+            case tmp of
+                Nothing -> pure False 
+                _       -> pure True
         out (Left _)  = pure False
-        out (Right _) = pure True
+        out (Right r) = pure r

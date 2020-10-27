@@ -29,21 +29,16 @@ Available commands:
 ```
 
 ### 2.1. Fuzzing 
-```sh
-$ overflow fuzz --help
+What if you want to find out the length of the target buffer on a server, and
+don't feel like writing a script for it?
 ```
-```
-Usage: overflow fuzz HOST PORT (-S|--step STEP) [-p|--prefix PREFIX] 
-                     [-s|--suffix SUFFIX]
-  Finds the approximate length of the buffer.
-
-Available options:
-  HOST                     Target machine's IP address
-  PORT                     Port the target service is running on
-  -S,--step STEP           The length to increase each iteration by
-  -p,--prefix PREFIX       (optional) Prefix to put before payload
-  -s,--suffix SUFFIX       (optional) Suffix to put after payload
-  -h,--help                Show this help text
+$ overflow fuzz 127.0.0.1 4444 -S 100
+    ───> Sending 100-byte payload to target...
+    ───> Sending 200-byte payload to target...
+    ───> Sending 300-byte payload to target...
+    ───> Sending 400-byte payload to target...
+    ───> Sending 500-byte payload to target...
+Done! Length of buffer is in the range [400, 500].
 ```
 
 ### 2.2. Sending a Cyclic Pattern
@@ -51,7 +46,7 @@ Say you wanted to find the offset of the EIP register, wouldn't it be great if
 you could just send a cyclic pattern of bytes without having to generate it and
 send it manually?
 
-```sh
+```
 $ overflow pattern 127.0.0.1 4444 -l 80
     ───> Sending 80-byte cyclic pattern to target.
 Success! Finished sending pattern to target

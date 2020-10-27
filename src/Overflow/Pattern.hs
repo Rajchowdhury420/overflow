@@ -10,12 +10,12 @@ import Text.Printf
 -- |...
 sendPattern :: Host -> Int -> (Maybe Text, Maybe Text) -> IO ()
 sendPattern h l (p, s) = do 
-        printf "    ───> Sending %d-byte cyclic pattern to target.\n" l
+        printf "    ───> Sending %d-byte cyclic pattern to target...\n" l
         sendPayload h payload >>= out
     where
         payload   = createPayload (cyclicPattern l) (p, s)
-        out  True = putStrLn "Success! Finished sending pattern to target."
-        out False = putStrLn "Error: An error occurred connecting to target."
+        out  True = putStrLn "Done! Finished sending pattern to target."
+        out False = putStrLn "Error: An error occurred sending payload to target."
 
 -- ...
 cyclicPattern :: Int -> String

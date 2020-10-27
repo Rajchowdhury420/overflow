@@ -2,6 +2,7 @@
 module Main where
 
 import Overflow
+import Overflow.Fuzz
 import Overflow.Pattern
 import Turtle
 
@@ -87,7 +88,7 @@ parser = subcommandGroup "Available commands:"
 
 -- ...
 run :: Command -> IO ()
-run (Fuzz h _ _)        = sendPayload h "This is a test string.\n" >>= print
+run (Fuzz h i x)        = runFuzzer h i x
 run (Pattern h l x)     = sendPattern h l x 
 run (BadChars _ _ _)    = putStrLn "BadChars..."
 run (Exploit _ _ _ _ _) = putStrLn "Exploit..."

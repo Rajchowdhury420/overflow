@@ -36,7 +36,7 @@ parseHost :: Parser Host
 parseHost = Host <$> addr <*> port
     where
         addr = argText "host" "Target machine's IP address"
-        port = argInt "port" "Port the target service is running on"
+        port = argText "port" "Port the target service is running on"
 
 -- ...
 parseAffix :: Parser (Maybe Text, Maybe Text)
@@ -87,7 +87,7 @@ parser = subcommandGroup "Available commands:"
 
 -- ...
 run :: Command -> IO ()
-run (Fuzz _ _ _)        = putStrLn "Fuzz..." 
+run (Fuzz h _ _)        = sendPayload h "This is a test string.\n" >>= print
 run (Pattern h l x)     = sendPattern h l x 
 run (BadChars _ _ _)    = putStrLn "BadChars..."
 run (Exploit _ _ _ _ _) = putStrLn "Exploit..."

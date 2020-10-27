@@ -7,10 +7,12 @@ import Data.Text (Text)
 import Data.Char (chr)
 
 -- |...
-sendPattern :: Host -> Int -> (Maybe Text, Maybe Text) -> IO () 
-sendPattern (Host ip port) l (p, s) = putStrLn payload
+sendPattern :: Host -> Int -> (Maybe Text, Maybe Text) -> IO ()
+sendPattern h l (p, s) = sendPayload h payload >>= out
     where
-        payload = createPayload (cyclicPattern l) (p, s)
+        payload   = createPayload (cyclicPattern l) (p, s)
+        out  True = putStrLn "Pattern sent successfully."
+        out False = putStrLn "Error: An error occurred connecting to target."
 
 -- ...
 cyclicPattern :: Int -> String

@@ -75,8 +75,10 @@ Done! Finished sending characters to target.
 ```
 
 You can also exclude particular characters from the payload sent to the target.
+For example, say you wanted to exclude the characters '00', '05' and '1A'.
+
 ```
-$ overflow badchars 127.0.0.1 4444 -o 160 -e "\x00\x05\x1A"
+$ overflow badchars 127.0.0.1 4444 -o 160 -e "00,05,1a"
     ───> Sending characters to target.
 Done! Finished sending characters to target.
 ```

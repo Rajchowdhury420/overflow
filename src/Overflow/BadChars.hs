@@ -29,5 +29,5 @@ parseExclude :: Maybe Text -> String
 parseExclude  Nothing = ""
 parseExclude (Just e) = map (chr . fst) $ concatMap readHex pairs
     where
-        pairs = splitOn "\\x" $ unpack e
+        pairs = splitOn "," $ unpack e
 

@@ -47,21 +47,19 @@ Available options:
 ```
 
 ### 2.2. Sending a Cyclic Pattern
-```sh
-$ overflow pattern --help
-```
-```
-Usage: overflow pattern HOST PORT (-l|--length LENGTH) [-p|--prefix PREFIX] 
-                        [-s|--suffix SUFFIX]
-  Sends a cyclic pattern of bytes of specified length
+Say you wanted to find the offset of the EIP register, wouldn't it be great if
+you could just send a cyclic pattern of bytes without having to generate it and
+send it manually?
 
-Available options:
-  HOST                     Target machine's IP address
-  PORT                     Port the target service is running on
-  -l,--length LENGTH       Length of the cyclic pattern to send
-  -p,--prefix PREFIX       (optional) Prefix to put before payload
-  -s,--suffix SUFFIX       (optional) Suffix to put after payload
-  -h,--help                Show this help text
+```sh
+$ overflow pattern 127.0.0.1 4444 -l 80
+    ───> Sending 80-byte cyclic pattern to target.
+Success! Finished sending pattern to target
+```
+```
+$ nc -lvp 4444
+Connection from 127.0.0.1:48870
+Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac
 ```
 
 ### 2.3. Finding Bad Characters

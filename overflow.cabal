@@ -1,0 +1,30 @@
+cabal-version:       >=1.10
+
+name:                overflow
+version:             0.1.0.0
+description:         A command-line tool for exploiting OSCP-like buffer
+                     overflows.
+license:             MIT
+license-file:        LICENSE
+author:              Stephen Radley
+maintainer:          stephen.t.radley@protonmail.com
+copyright:           2020 Stephen Radley
+build-type:          Simple
+extra-source-files:  CHANGELOG.md
+
+library
+  exposed-modules:     Overflow
+  ghc-options:         -Wall
+  build-depends:       base >=4.14 && <4.15
+                     , bytestring
+                     , text
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+
+executable overflow
+  main-is:             Main.hs
+  build-depends:       base >=4.14 && <4.15
+                     , overflow
+                     , turtle
+  hs-source-dirs:      app
+  default-language:    Haskell2010

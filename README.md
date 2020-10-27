@@ -2,7 +2,12 @@
 A command-line tool for exploiting OSCP-like buffer overflows.
 
 ## 1. Installation
-Still have to set this up on hackage.
+```sh
+$ git clone https://github.com/sradley/overflow.git
+$ cd overflow
+$ cabal update
+$ cabal install
+```
 
 ## 2. Usage
 ```sh

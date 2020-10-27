@@ -11,6 +11,9 @@ $ cabal install
 
 ## 2. Usage
 ```sh
+$ overflow --help
+```
+```
 A command-line tool for exploiting OSCP-like buffer overflows.
 
 Usage: overflow fuzz | pattern | badchars | exploit
@@ -27,15 +30,17 @@ Available commands:
 
 ### 2.1. Fuzzing 
 ```sh
-$ overflow fuzz ...
+$ overflow fuzz --help
 ```
-```sh
-Usage: overflow fuzz HOST PORT [-p|--prefix PREFIX] [-s|--suffix SUFFIX]
+```
+Usage: overflow fuzz HOST PORT (-S|--step STEP) [-p|--prefix PREFIX] 
+                     [-s|--suffix SUFFIX]
   Finds the approximate length of the buffer.
 
 Available options:
   HOST                     Target machine's IP address
   PORT                     Port the target service is running on
+  -S,--step STEP           The length to increase each iteration by
   -p,--prefix PREFIX       (optional) Prefix to put before payload
   -s,--suffix SUFFIX       (optional) Suffix to put after payload
   -h,--help                Show this help text
@@ -43,9 +48,9 @@ Available options:
 
 ### 2.2. Sending a Cyclic Pattern
 ```sh
-$ overflow pattern ...
+$ overflow pattern --help
 ```
-```sh
+```
 Usage: overflow pattern HOST PORT (-l|--length LENGTH) [-p|--prefix PREFIX] 
                         [-s|--suffix SUFFIX]
   Sends a cyclic pattern of bytes of specified length
@@ -61,9 +66,9 @@ Available options:
 
 ### 2.3. Finding Bad Characters
 ```sh
-$ overflow badchars ...
+$ overflow badchars --help
 ```
-```sh
+```
 Usage: overflow badchars HOST PORT (-o|--offset OFFSET) [-p|--prefix PREFIX] 
                          [-s|--suffix SUFFIX]
   Sends every character from 0x01 to 0xFF
@@ -79,9 +84,9 @@ Available options:
 
 ### 2.4. Running an Exploit
 ```sh
-$ overflow exploit ...
+$ overflow exploit --help
 ```
-```sh
+```
 Usage: overflow exploit HOST PORT (-o|--offset OFFSET) (-a|--address ADDRESS)
                         (-p|--payload PAYLOAD) [-p|--prefix PREFIX] 
                         [-s|--suffix SUFFIX]

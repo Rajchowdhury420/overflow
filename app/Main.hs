@@ -2,12 +2,14 @@
 module Main where
 
 import Overflow
+import Overflow.Pattern
 import Turtle
 
 -- ...
 data Command =
     -- ...
     Fuzz { host  :: Host 
+         , step  :: Int
          , affix :: (Maybe Text, Maybe Text) } |
     -- ...
     Pattern { host   :: Host
@@ -47,7 +49,9 @@ parseAffix = (,) <$> prefix <*> suffix
 
 -- ...
 fuzz :: Parser Command
-fuzz = Fuzz <$> parseHost <*> parseAffix
+fuzz = Fuzz <$> parseHost <*> step <*> parseAffix
+    where
+        step = optInt "step" 'S' "The length to increase each iteration by"
 
 -- ...
 pattern :: Parser Command
@@ -83,7 +87,7 @@ parser = subcommandGroup "Available commands:"
 
 -- ...
 run :: Command -> IO ()
-run (Fuzz _ _)          = putStrLn "Fuzz..." 
+run (Fuzz _ _ _)        = putStrLn "Fuzz..." 
 run (Pattern h l x)     = sendPattern h l x 
 run (BadChars _ _ _)    = putStrLn "BadChars..."
 run (Exploit _ _ _ _ _) = putStrLn "Exploit..."

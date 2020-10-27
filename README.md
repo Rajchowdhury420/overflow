@@ -10,27 +10,24 @@ $ cabal install
 ```
 
 ## 2. Usage
+The help menu is pretty exhaustive, if you're stuck you should give it a look.
+
 ```sh
 $ overflow --help
+...
 ```
-```
-A command-line tool for exploiting OSCP-like buffer overflows.
-
-Usage: overflow fuzz | pattern | badchars | exploit
-
-Available options:
-  -h,--help                Show this help text
-
-Available commands:
-  fuzz                     Finds the approximate length of the buffer.
-  pattern                  Sends a cyclic pattern of bytes of specified length
-  badchars                 Sends every character from 0x01 to 0xFF
-  exploit                  Attempts to execute a specified payload on target
+```sh
+$ overflow <subcommand> --help
+...
 ```
 
-### 2.1. Fuzzing 
-What if you wanted to find out the length of the target buffer on a server, but
-you didn't feel like writing a script for it?
+### 2.1. Fuzzing
+You can use this tool to discover the length of the target buffer.
+
+The fuzz subcommand will send increasingly long (size specified by the step
+parameter) bytestrings comprised of As (0x41). When the server stops responding
+the fuzzer assumes that it has reached a buffer overflow and reports the
+possible length of the buffer.
 
 ```
 $ overflow fuzz 127.0.0.1 4444 -S 100
@@ -43,9 +40,12 @@ Done! Length of buffer is in the range (400, 500].
 ```
 
 ### 2.2. Sending a Cyclic Pattern
-Say you wanted to find the offset of the EIP register, wouldn't it be great if
-you could just send a cyclic pattern of bytes without having to generate it and
-send it manually?
+You can use this tool to send a cyclic pattern of bytes to the server. Great
+for discovering offsets of particular registers.
+
+The pattern subcommand will generate and send a specified length cyclic pattern
+of bytes to the target server, however, figuring out the offset to the EIP
+register (for example) is up to you. 
 
 ```
 $ overflow pattern 127.0.0.1 4444 -l 80

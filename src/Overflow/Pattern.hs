@@ -9,11 +9,11 @@ import Text.Printf
 
 -- |...
 sendPattern :: Host -> Int -> (Maybe Text, Maybe Text) -> IO ()
-sendPattern h l (p, s) = do 
+sendPattern h l a = do 
         printf "    ───> Sending %d-byte cyclic pattern to target...\n" l
         sendPayload h payload >>= out
     where
-        payload   = createPayload (cyclicPattern l) (p, s)
+        payload   = createPayload (cyclicPattern l) a
         out  True = putStrLn "Done! Finished sending pattern to target."
         out False = putStrLn "Error: An error occurred sending payload to target."
 

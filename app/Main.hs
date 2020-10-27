@@ -4,6 +4,7 @@ module Main where
 import Overflow
 import Overflow.Fuzz
 import Overflow.Pattern
+import Overflow.BadChars
 import Turtle
 
 -- ...
@@ -23,7 +24,7 @@ data Command =
     -- ...
     Exploit { host    :: Host 
             , offset  :: Int
-            , address :: Text
+            , jump    :: Text
             , payload :: Text
             , affix   :: (Maybe Text, Maybe Text) }
     deriving (Show)
@@ -70,12 +71,12 @@ badchars = BadChars <$> parseHost <*> offset <*> parseAffix
 exploit :: Parser Command
 exploit = Exploit <$> parseHost
                   <*> offset
-                  <*> address
+                  <*> jump
                   <*> payload
                   <*> parseAffix
     where
         offset  = optInt "offset" 'o' "The offset of the EIP register"
-        address = optText "address" 'a' "Jump address for executing shellcode"
+        jump    = optText "jump" 'j' "Jump address for executing shellcode"
         payload = optText "payload" 'p' "Payload to be executed on target"
 
 -- ...
@@ -88,9 +89,9 @@ parser = subcommandGroup "Available commands:"
 
 -- ...
 run :: Command -> IO ()
-run (Fuzz h i x)        = runFuzzer h i x
-run (Pattern h l x)     = sendPattern h l x 
-run (BadChars _ _ _)    = putStrLn "BadChars..."
+run (Fuzz h i a)        = runFuzzer h i a
+run (Pattern h l a)     = sendPattern h l a 
+run (BadChars h o a)    = sendBadChars h o a 
 run (Exploit _ _ _ _ _) = putStrLn "Exploit..."
 
 main :: IO ()

@@ -60,21 +60,18 @@ Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac
 ```
 
 ### 2.3. Finding Bad Characters
-```sh
-$ overflow badchars --help
-```
-```
-Usage: overflow badchars HOST PORT (-o|--offset OFFSET) [-p|--prefix PREFIX] 
-                         [-s|--suffix SUFFIX]
-  Sends every character from 0x01 to 0xFF
+You can use this tool to send every character from 0x01 to 0xFF to the target
+service. It's only real use is to discover bad characters (e.g. characters that
+the service treats differently in execution).
 
-Available options:
-  HOST                     Target machine's IP address
-  PORT                     Port the target service is running on
-  -o,--offset OFFSET       The offset of the EIP register
-  -p,--prefix PREFIX       (optional) Prefix to put before payload
-  -s,--suffix SUFFIX       (optional) Suffix to put after payload
-  -h,--help                Show this help text
+The badchars subcommand will generate and send a bytestring consisting of every
+possible character to the target service. However, determining which characters
+are bad is up to you.
+
+```
+$ overflow badchars 127.0.0.1 4444 -o 160
+    ───> Sending all characters to target.
+Done! Finished sending all characters to target.
 ```
 
 ### 2.4. Running an Exploit

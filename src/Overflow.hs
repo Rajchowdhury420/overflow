@@ -27,20 +27,23 @@ createPayload x (Nothing, Nothing) = x
 -- |...
 sendPayload :: Host -> String -> IO Bool
 sendPayload (Host a p) x = withSocketsDo $ do
-        addr <- resolve
-        result <- E.try (run addr) :: IO (Either E.SomeException Bool)
-        out result
+        addr <- resolveAddress
+        (E.try (runSocket x addr) :: IO (Either E.SomeException Bool)) >>= handleOutput
     where
-        resolve = do
+        resolveAddress = do
             let hints = defaultHints { addrSocketType = Stream }
             head <$> getAddrInfo (Just hints) (Just (unpack a)) (Just (unpack p))
-        run addr = do
-            sock <- openSocket addr
-            connect sock $ addrAddress addr
-            sendAll sock (Char8.pack x)
-            tmp <- timeout 5000000 (recv sock 1024) -- 3s
-            case tmp of
-                Nothing -> pure False 
-                _       -> pure True
-        out (Left _)  = pure False
-        out (Right r) = pure r
+        handleOutput (Left _)  = pure False
+        handleOutput (Right r) = pure r
+
+-- ...
+runSocket :: String -> AddrInfo -> IO Bool
+runSocket x a = do
+        sock <- openSocket a
+        connect sock $ addrAddress a
+        sendAll sock (Char8.pack x)
+        timeout 5000000 (recv sock 1024) >>= handleOutput
+    where
+        handleOutput Nothing  = pure False
+        handleOutput (Just _) = pure True
+

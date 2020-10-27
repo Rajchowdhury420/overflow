@@ -9,11 +9,11 @@ import Text.Printf
 
 -- |...
 runFuzzer :: Host -> Int -> (Maybe Text, Maybe Text) -> IO ()
-runFuzzer h i x = runFuzzer' h i i x True >>= out 
+runFuzzer h i x = runFuzzer' h i i x True >>= handleOutput 
     where
-        out c
+        handleOutput c
             |    c == i = putStrLn "Error: An error occurred sending payload to target."
-            | otherwise = printf "Done! Length of buffer is in the range [%d, %d].\n" (c - i) c
+            | otherwise = printf "Done! Length of buffer is in the range (%d, %d].\n" (c - i) c
 
 -- ...
 runFuzzer' :: Host -> Int -> Int -> (Maybe Text, Maybe Text) -> Bool -> IO Int

@@ -29,8 +29,9 @@ Available commands:
 ```
 
 ### 2.1. Fuzzing 
-What if you want to find out the length of the target buffer on a server, and
-don't feel like writing a script for it?
+What if you wanted to find out the length of the target buffer on a server, but
+you didn't feel like writing a script for it?
+
 ```
 $ overflow fuzz 127.0.0.1 4444 -S 100
     ───> Sending 100-byte payload to target...
@@ -38,7 +39,7 @@ $ overflow fuzz 127.0.0.1 4444 -S 100
     ───> Sending 300-byte payload to target...
     ───> Sending 400-byte payload to target...
     ───> Sending 500-byte payload to target...
-Done! Length of buffer is in the range [400, 500].
+Done! Length of buffer is in the range (400, 500].
 ```
 
 ### 2.2. Sending a Cyclic Pattern
@@ -51,6 +52,7 @@ $ overflow pattern 127.0.0.1 4444 -l 80
     ───> Sending 80-byte cyclic pattern to target.
 Success! Finished sending pattern to target
 ```
+
 ```
 $ nc -lvp 4444
 Connection from 127.0.0.1:48870

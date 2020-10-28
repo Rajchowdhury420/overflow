@@ -5,6 +5,7 @@ import Overflow
 import Overflow.Fuzz
 import Overflow.Pattern
 import Overflow.BadChars
+import Overflow.Exploit
 import Turtle
 
 -- ...
@@ -12,22 +13,22 @@ data Command =
     -- ...
     Fuzz { host  :: Host 
          , step  :: Int
-         , affix :: (Maybe Text, Maybe Text) } |
+         , affix :: Affix } |
     -- ...
     Pattern { host   :: Host
             , length :: Int
-            , affix  :: (Maybe Text, Maybe Text) } |
+            , affix  :: Affix } |
     -- ...
     BadChars { host    :: Host
              , offset  :: Int
              , exclude :: Maybe Text
-             , affix   :: (Maybe Text, Maybe Text) } |
+             , affix   :: Affix } |
     -- ...
     Exploit { host    :: Host 
             , offset  :: Int
             , jump    :: Text
-            , payload :: Text
-            , affix   :: (Maybe Text, Maybe Text) }
+            , payload :: Turtle.FilePath
+            , affix   :: Affix }
     deriving (Show)
 
 -- ...
@@ -42,7 +43,7 @@ parseHost = Host <$> addr <*> port
         port = argText "port" "Port the target service is running on"
 
 -- ...
-parseAffix :: Parser (Maybe Text, Maybe Text)
+parseAffix :: Parser Affix
 parseAffix = (,) <$> prefix <*> suffix
     where
         prefix = optional $
@@ -80,7 +81,7 @@ exploit = Exploit <$> parseHost
     where
         offset  = optInt "offset" 'o' "The offset of the EIP register"
         jump    = optText "jump" 'j' "Jump address for executing shellcode"
-        payload = optText "payload" 'p' "Payload to be executed on target"
+        payload = optPath "payload" 'p' "Path to payload to be executed on target"
 
 -- ...
 parser :: Parser Command
@@ -95,7 +96,7 @@ run :: Command -> IO ()
 run (Fuzz h i a)        = runFuzzer h i a
 run (Pattern h l a)     = sendPattern h l a 
 run (BadChars h o e a)  = sendBadChars h o e a 
-run (Exploit _ _ _ _ _) = putStrLn "Exploit..."
+run (Exploit h o j f a) = sendExploit h o j (encodeString f) a
 
 main :: IO ()
 main = do

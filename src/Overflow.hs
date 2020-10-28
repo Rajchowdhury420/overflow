@@ -1,9 +1,9 @@
 module Overflow
 ( Host (..)
+, Affix
 , createPayload
 , sendPayload
 ) where
-
 
 import qualified Control.Exception         as E
 import qualified Data.ByteString.Char8     as Char8
@@ -12,13 +12,15 @@ import           Network.Socket
 import           Network.Socket.ByteString (recv, sendAll)
 import           System.Timeout
 
+type Affix = (Maybe Text, Maybe Text)
+
 -- |...
 data Host =
     Host Text Text
     deriving (Show)
 
 -- |...
-createPayload :: String -> (Maybe Text, Maybe Text) -> String
+createPayload :: String -> Affix -> String
 createPayload x (Just p, Just s)   = unpack p ++ x ++ unpack s
 createPayload x (Just p, Nothing)  = unpack p ++ x
 createPayload x (Nothing, Just s)  = x ++ unpack s
@@ -28,13 +30,13 @@ createPayload x (Nothing, Nothing) = x
 sendPayload :: Host -> String -> IO Bool
 sendPayload (Host a p) x = withSocketsDo $ do
         addr <- resolveAddress
-        (E.try (runSocket x addr) :: IO (Either E.SomeException Bool)) >>= handleOutput
+        (E.try (runSocket x addr) :: IO (Either E.SomeException Bool)) >>= output
     where
-        resolveAddress = do
-            let hints = defaultHints { addrSocketType = Stream }
-            head <$> getAddrInfo (Just hints) (Just (unpack a)) (Just (unpack p))
-        handleOutput (Left _)  = pure False
-        handleOutput (Right r) = pure r
+        (ip, port)       = (unpack a, unpack p)
+        hints            = defaultHints { addrSocketType = Stream }
+        resolveAddress   = head <$> getAddrInfo (Just hints) (Just ip) (Just port)
+        output (Left _)  = pure False
+        output (Right r) = pure r
 
 -- ...
 runSocket :: String -> AddrInfo -> IO Bool

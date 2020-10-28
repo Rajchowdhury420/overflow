@@ -3,19 +3,16 @@ module Overflow.Pattern
 ) where
 
 import Overflow
-import Data.Text   (Text)
 import Data.Char   (chr)
 import Text.Printf
 
 -- |...
-sendPattern :: Host -> Int -> (Maybe Text, Maybe Text) -> IO ()
+sendPattern :: Host -> Int -> Affix -> IO ()
 sendPattern h l a = do 
         printf "    ───> Sending %d-byte cyclic pattern to target...\n" l
-        sendPayload h payload >>= out
+        sendPayload h payload >>= printResult
     where
         payload   = createPayload (cyclicPattern l) a
-        out  True = putStrLn "Done! Finished sending pattern to target."
-        out False = putStrLn "Error: An error occurred sending payload to target."
 
 -- ...
 cyclicPattern :: Int -> String
@@ -32,3 +29,9 @@ nextCycle (x, y, z) = next (x, y, z + 1)
         next (a, 123, c) = next (a + 1, 97, c)
         next  (91, _, _) = next (65, 97, 48)
         next   (a, b, c) = (a, b, c)
+
+-- ...
+printResult :: Bool -> IO ()
+printResult x
+    | x         = putStrLn "Done! Finished sending pattern to target."
+    | otherwise = putStrLn "Error: An error occurred sending payload to target."

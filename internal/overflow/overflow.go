@@ -32,6 +32,7 @@ func sendPayload(host string, port int, payload []byte) error {
     if err != nil {
         return err
     }
+    defer conn.Close()
 
     // set I/O timeout
     if err = conn.SetDeadline(time.Now().Add(timeout)); err != nil {
@@ -51,5 +52,18 @@ func sendPayload(host string, port int, payload []byte) error {
 
     // payload was sent successfully
     return nil
+}
+
+// builds a byte array of length n, populated by 0x41 characters
+func overflow(length int) []byte {
+    // instantiate the empty byte array
+    data := make([]byte, length)
+
+    // populate the byte array with 0x41 characters
+    for i := 0; i < length; i++ {
+        data[i] = 0x41
+    }
+
+    return data
 }
 

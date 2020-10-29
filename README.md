@@ -2,24 +2,9 @@
 Overflow is a command-line tool you can use to exploit OSCP-style buffer
 overflows.
 
-## Table of Contents
- - [Installation](#installation)
-   * [Pre-Built Binaries](#pre-built-binaries)
-   * [Using Go Get](#using-go-get)
-   * [Building from Source](#building-from-source)
- - [Usage](#usage)
-   * [Fuzzing for Buffer Length](#fuzzing-for-buffer-length)
-     + [Fuzz Usage](#fuzz-usage)
-     + [Fuzz Example](#fuzz-example)
-   * [Sending Cyclic Patterns](#sending-cyclic-patterns)
-     + [Pattern Usage](#pattern-usage)
-     + [Pattern Example](#pattern-example)
-   * [Sending Bad Characters](#sending-bad-characters)
-     + [Chars Usage](#chars-usage)
-     + [Chars Example](#chars-example)
-   * [Running Exploits](#running-exploits)
-     + [Exploit Usage](#exploit-usage)
-     + [Exploit Example](#exploit-example)
+Note: Exploit & chars functionality not yet implemented.
+
+![fuzz.gif](doc/fuzz.gif)
 
 ## Installation
 

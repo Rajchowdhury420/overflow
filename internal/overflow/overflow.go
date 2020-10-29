@@ -67,3 +67,7 @@ func overflow(length int) []byte {
     return data
 }
 
+// ...
+func parseHex(hex string) ([]byte, error) {
+    return nil, nil
+}

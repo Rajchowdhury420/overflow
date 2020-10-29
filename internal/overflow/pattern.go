@@ -22,7 +22,7 @@ func Pattern(host string, port int, length int, pref, suff string) {
         return
     }
 
-    // notify user of that pattern was successfully delivered
+    // notify user that the payload was successfully delivered
     fmt.Println("\n Success! No errors found.")
 }
 

@@ -4,6 +4,7 @@ import (
     "fmt"
 )
 
+// title card template
 var title = `
   ______   __   __ ______   ______
  /\  __ \ /\ \ / //\  ___\ /\  == \
@@ -21,28 +22,32 @@ var title = `
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────`
 
-
+// default arguments template
 var base = `
  :: Mode        : %s
  :: Host        : %s
  :: Port        : %d`
 
+// fuzz command specific arguments template
 var fuzz = `
  :: Step        : %d
 ──────────────────────────────────────────────────
 `
 
+// pattern command specific arguments template
 var pattern = `
  :: Length      : %d
 ──────────────────────────────────────────────────
 `
 
+// chars command specific arguments template
 var chars = `
  :: Offset      : %d
  :: Exclude     : "%s"
 ──────────────────────────────────────────────────
 `
 
+// exploit command specific arguments template
 var exploit = `
  :: Offset      : %d
  :: Jump        : "%s"
@@ -50,6 +55,7 @@ var exploit = `
 ──────────────────────────────────────────────────
 `
 
+// prints the title card when executing the fuzz command
 func FuzzTitle(host string, port int, step int) {
     // print the title
     fmt.Print(title)
@@ -61,6 +67,7 @@ func FuzzTitle(host string, port int, step int) {
     fmt.Printf(fuzz, step)
 }
 
+// prints the title when executing the pattern command
 func PatternTitle(host string, port int, length int) {
     // print the title
     fmt.Print(title)
@@ -72,6 +79,7 @@ func PatternTitle(host string, port int, length int) {
     fmt.Printf(pattern, length)
 }
 
+// prints the title when executing the chars command
 func CharsTitle(host string, port int, offset int, exclude string) {
     // print the title
     fmt.Print(title)
@@ -83,6 +91,7 @@ func CharsTitle(host string, port int, offset int, exclude string) {
     fmt.Printf(chars, offset, exclude)
 }
 
+// prints the title when executing the exploit command
 func ExploitTitle(host string, port int, offset int, jump string,
         shell string) {
     // print the title
@@ -94,3 +103,4 @@ func ExploitTitle(host string, port int, offset int, jump string,
     // print the arguments passed to exploit
     fmt.Printf(exploit, offset, jump, shell)
 }
+

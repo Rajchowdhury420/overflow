@@ -1,8 +1,9 @@
 package chars
 
 import (
-    "fmt"
     "github.com/spf13/cobra"
+    "overflow/internal/overflow"
+    "overflow/internal/cli"
 )
 
 var (
@@ -48,5 +49,9 @@ func Init() {
 }
 
 func chars(cmd *cobra.Command, args []string) {
-    fmt.Println("Chars!")
+    // print the title card
+    cli.CharsTitle(host, port, offset, exclude)
+
+    // run the chars functionality
+    overflow.Chars(host, port, offset, exclude, pref, suff)
 }

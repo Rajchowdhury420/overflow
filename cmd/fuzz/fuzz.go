@@ -3,6 +3,7 @@ package fuzz
 import (
     "github.com/spf13/cobra"
     "overflow/internal/overflow"
+    "overflow/internal/cli"
 )
 
 var (
@@ -43,5 +44,9 @@ func Init() {
 }
 
 func fuzz(cmd *cobra.Command, args []string) {
+    // print the title card
+    cli.FuzzTitle(host, port, step)
+
+    // run the fuzz functionality
     overflow.Fuzz(host, port, step, pref, suff)
 }

@@ -37,4 +37,3 @@ func init() {
     root.AddCommand(exploit.Exploit)
     exploit.Init()
 }
-

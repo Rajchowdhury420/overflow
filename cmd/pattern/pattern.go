@@ -1,8 +1,9 @@
 package pattern
 
 import (
-    "fmt"
     "github.com/spf13/cobra"
+    "overflow/internal/overflow"
+    "overflow/internal/cli"
 )
 
 var (
@@ -43,5 +44,9 @@ func Init() {
 }
 
 func pattern(cmd *cobra.Command, args []string) {
-    fmt.Println("Pattern!")
+    // print the title card
+    cli.PatternTitle(host, port, length)
+
+    // run the pattern functionality
+    overflow.Pattern(host, port, length, pref, suff)
 }

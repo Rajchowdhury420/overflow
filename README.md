@@ -16,7 +16,10 @@ particularly if you're planning on getting your OSCP certification. Have fun!
 ## Installation
 
 ### Pre-Built Binaries
-I'll do this as soon as I make a release.
+If you don't have a golang environment, or you just don't feel like building
+from source, you can check out the
+[releases](https://github.com/sradley/overflow/releases) page for pre-built
+binaries.
 
 ### Using Go Get
 If you have a golang environment set up, you can use `go get` to fetch and

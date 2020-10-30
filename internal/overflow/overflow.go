@@ -4,6 +4,8 @@ import (
     "fmt"
     "net"
     "time"
+    "strings"
+    "encoding/hex"
 )
 
 // timeout used for connection and I/O
@@ -60,3 +62,19 @@ func generateBytes(b byte, length int) []byte {
 
     return data
 }
+
+// parses a string of hex chars in the format "\x01\x02\x03"
+func parseHex(exclude string) ([]byte, error) {
+    // convert string to format "010203"
+    bytes := strings.Split(exclude, "\\x")
+    hexstr := strings.Join(bytes[:], "")
+
+    // parse hex string
+    data, err := hex.DecodeString(hexstr)
+    if err != nil {
+        return nil, err
+    }
+
+    return data, nil
+}
+

@@ -1,4 +1,4 @@
-# Overflow
+# Overflow (WIP)
 
 ![Build Status](https://img.shields.io/github/workflow/status/sradley/overflow/Test?style=flat-square)
 ![Latest Release](https://img.shields.io/github/v/release/sradley/overflow?style=flat-square)
@@ -223,6 +223,7 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160
  :: Exclude     : ""
 ──────────────────────────────────────────────────
  > Parsing exclusions.
+ > Generating characters.
  > Building payload.
  > Sending 416-byte payload. 
  
@@ -257,6 +258,7 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160 -e "\x00\x41\xAB\x01"
  :: Exclude     : "\x00\x41\xAB\x01"
 ──────────────────────────────────────────────────
  > Parsing exclusions.
+ > Generating characters.
  > Building payload.
  > Sending 412-byte payload. 
  
@@ -293,7 +295,7 @@ $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "\x5f\x4a\x35\x8f" -S path/to/
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v0.1.0
+        v0.1.3
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────
@@ -302,11 +304,12 @@ $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "\x5f\x4a\x35\x8f" -S path/to/
  :: Port        : 4444
  :: Offset      : 160
  :: Jump        : "\x5f\x4a\x35\x8f"
- :: Shell       : path/to/payload.shell
+ :: Shell       : payload.shell
 ──────────────────────────────────────────────────
+ > Parsing jump address.
  > Reading shellcode.
  > Building payload.
- > Sending 531-byte payload. 
+ > Sending 535-byte payload.
  
  Success! No errors found.
 ```

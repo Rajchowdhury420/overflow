@@ -6,7 +6,7 @@ import (
     "time"
 )
 
-// ...
+// sleep duration of 1s
 const sleep time.Duration = 1000000000
 
 // the main functionality of the fuzz subroutine

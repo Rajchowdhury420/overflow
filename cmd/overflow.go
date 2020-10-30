@@ -3,10 +3,10 @@ package cmd
 import (
     "os"
     "github.com/spf13/cobra"
-    "overflow/cmd/fuzz"
-    "overflow/cmd/pattern"
-    "overflow/cmd/chars"
-    "overflow/cmd/exploit"
+    "github.com/sradley/overflow/cmd/fuzz"
+    "github.com/sradley/overflow/cmd/pattern"
+    "github.com/sradley/overflow/cmd/chars"
+    "github.com/sradley/overflow/cmd/exploit"
 )
 
 // root command definition

@@ -2,8 +2,8 @@ package pattern
 
 import (
     "github.com/spf13/cobra"
-    "overflow/internal/overflow"
-    "overflow/internal/cli"
+    "github.com/sradley/overflow/internal/overflow"
+    "github.com/sradley/overflow/internal/cli"
 )
 
 // arguments taken by the pattern command

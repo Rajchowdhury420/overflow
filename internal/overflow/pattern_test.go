@@ -4,21 +4,33 @@ import (
     "testing"
 )
 
-// ...
-func TestCyclicPatternSmall(t *testing.T) {
-    // ...
-    want := "Aa0Aa1Aa2A"
-    data := cyclicPattern(10)
+// tests generating an empty cyclic pattern of bytes
+func TestCyclicPatternEmpty(t *testing.T) {
+    // generate empty cyclic pattern of bytes
+    want := ""
+    data := cyclicPattern(0)
 
-    // ...
+    // if strings don't match, test failed
     if string(data) != want {
         t.Errorf("string(data) = %s, want %s", string(data), want)
     }
 }
 
-// ...
+// tests generating a small cyclic pattern of bytes
+func TestCyclicPatternSmall(t *testing.T) {
+    // generate small cyclic pattern of bytes
+    want := "Aa0Aa1Aa2A"
+    data := cyclicPattern(10)
+
+    // if strings don't match, test failed
+    if string(data) != want {
+        t.Errorf("string(data) = %s, want %s", string(data), want)
+    }
+}
+
+// tests generating a large cyclic pattern of bytes
 func TestCyclicPatternLarge(t *testing.T) {
-    // ...
+    // generate large cyclic pattern of bytes
     want := "Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0" +
             "Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1" +
             "Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2" +
@@ -37,51 +49,51 @@ func TestCyclicPatternLarge(t *testing.T) {
             "Bf5Bf6Bf7Bf8Bf9Bg0Bg1Bg2Bg3Bg4Bg5Bg6Bg7Bg8Bg9Bh0Bh1Bh2B"
     data := cyclicPattern(1000)
 
-    // ...
+    // if strings don't match, test failed
     if string(data) != want {
         t.Errorf("string(data) = %s, want %s", string(data), want)
     }
 }
 
-// ...
+// tests generating the next cycle, with no rollover
 func TestNextCycleSimple(t *testing.T) {
-    // ...
+    // generate next cycle
     x, y, z := nextCycle(65, 97, 51)
 
-    // ...
+    // if results don't match, test failed
     if x != 65 || y != 97 || z != 52 {
         t.Errorf("x, y, z = %d, %d, %d, want %d, %d, %d", x, y, z, 65, 97, 52)
     }
 }
 
-// ...
+// tests generating the next cycle, with a rollover on z
 func TestNextCycleRollZ(t *testing.T) {
-    // ...
+    // generate next cycle
     x, y, z := nextCycle(65, 97, 57)
 
-    // ...
+    // if results don't match, test failed
     if x != 65 || y != 98 || z != 48 {
         t.Errorf("x, y, z = %d, %d, %d, want %d, %d, %d", x, y, z, 65, 98, 48)
     }
 }
 
-// ...
+// tests generating the next cycle, with rollovers on z and y
 func TestNextCycleRollY(t *testing.T) {
-    // ...
+    // generate next cycle
     x, y, z := nextCycle(65, 122, 57)
 
-    // ...
+    // if results don't match, test failed
     if x != 66 || y != 97 || z != 48 {
         t.Errorf("x, y, z = %d, %d, %d, want %d, %d, %d", x, y, z, 66, 97, 48)
     }
 }
 
-// ...
+// tests generating the next cycle, with rollovers on all values
 func TestNextCycleRollX(t *testing.T) {
-    // ...
+    // generate next cycle
     x, y, z := nextCycle(90, 122, 57)
 
-    // ...
+    // if results don't match, test failed
     if x != 65 || y != 97 || z != 48 {
         t.Errorf("x, y, z = %d, %d, %d, want %d, %d, %d", x, y, z, 65, 97, 48)
     }

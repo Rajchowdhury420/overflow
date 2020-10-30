@@ -8,12 +8,15 @@ import (
 // the main functionality of the pattern subroutine
 func Pattern(host string, port int, length int, pref, suff string) {
     // create n-byte cyclic pattern
+    fmt.Println(" > Generating pattern.")
     data := cyclicPattern(length)
 
     // build payload
+    fmt.Println(" > Building payload.")
     payload := createPayload(data, pref, suff)
 
     // send payload to target service
+    fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
     err := sendPayload(host, port, payload)
 
     // notify user of error if one has occurred
@@ -28,10 +31,7 @@ func Pattern(host string, port int, length int, pref, suff string) {
 
 // generates a cyclic pattern of specified length
 func cyclicPattern(length int) []byte {
-    // notify user that pattern is being generated
-    fmt.Println(" > Generating pattern.")
-
-    data := make([]byte, length + length % 3)
+    data := make([]byte, length + (3 - length % 3))
 
     // generate cyclic pattern
     x, y, z := byte(65), byte(97), byte(48)
@@ -65,7 +65,7 @@ func nextCycle(x, y, z byte) (byte, byte, byte) {
 
         // if x has rolled over, reset all 
         if x == 91 {
-            return 65, 97, 57
+            return 65, 97, 48
         }
 
         // if none have rolled over, return

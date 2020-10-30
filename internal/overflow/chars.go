@@ -8,24 +8,16 @@ import (
 // ...
 func Chars(host string, port int, offset int, exclude string, pref,
         suff string) {
-    // notify user that the exclusions are being parsed
-    fmt.Println(" > Parsing exclusions.")
-
-    // parse exclusions
-    exclusions, err := parseHex(exclude)
-    if err != nil {
-        fmt.Println(" Error! invalid byte in exclusion string")
-        return
-    }
-
     // generate the byte array of characters to send to the target service
-    data := characters(exclusions)
+    data := characters([]byte(exclude))
 
     // build payload 
+    fmt.Println(" > Building payload.")
     payload := createPayload(data, pref, suff)
 
     // send payload to target service
-    err = sendPayload(host, port, payload)
+    fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
+    err := sendPayload(host, port, payload)
 
     // notify user of error if one has occurred
     if err != nil {

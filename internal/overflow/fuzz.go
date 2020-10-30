@@ -16,12 +16,14 @@ func Fuzz(host string, port int, step int, pref, suff string) {
 
     for length = step; err == nil; length += step {
         // create n-byte byte array
-        data := overflow(length)
+        data := generateBytes(0x41, length)
 
         // build payload
+        fmt.Println(" > Building payload.")
         payload := createPayload(data, pref, suff)
 
         // send payload to target service
+        fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
         err = sendPayload(host, port, payload)
 
         time.Sleep(sleep)

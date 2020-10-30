@@ -1,4 +1,4 @@
-# Overflow (WIP)
+# Overflow
 
 ![Build Status](https://img.shields.io/github/workflow/status/sradley/overflow/Test?style=flat-square)
 ![Latest Release](https://img.shields.io/github/v/release/sradley/overflow?style=flat-square)

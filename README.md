@@ -1,10 +1,10 @@
 # Overflow
 
-![Build Status](https://img.shields.io/github/workflow/status/sradley/overflow/Test?style=flat-square)
-![Latest Release](https://img.shields.io/github/v/release/sradley/overflow?style=flat-square)
-![Downloads](https://img.shields.io/github/downloads/sradley/overflow/total?style=flat-square)
-![Issues](https://img.shields.io/github/issues/sradley/overflow?style=flat-square)
-![Go Version](https://img.shields.io/github/go-mod/go-version/sradley/overflow?style=flat-square)
+[![Build Status](https://img.shields.io/github/workflow/status/sradley/overflow/Test?style=flat-square)](https://github.com/sradley/overflow/actions)
+[![Latest Release](https://img.shields.io/github/v/release/sradley/overflow?style=flat-square)](https://github.com/sradley/overflow/releases)
+[![Downloads](https://img.shields.io/github/downloads/sradley/overflow/total?style=flat-square)](https://github.com/sradley/overflow/releases)
+[![Issues](https://img.shields.io/github/issues/sradley/overflow?style=flat-square)](https://github.com/sradley/overflow/issues)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/sradley/overflow?style=flat-square)](https://golang.org/)
 
 Overflow is a command-line tool used exploiting OSCP-style buffer overflow
 vulnerabilities with a focus on rapid exploitation. However, I would

@@ -47,7 +47,7 @@ func Init() {
     Fuzz.MarkFlagRequired("step")
 
     // wait time flag (optional)
-    Fuzz.Flags().IntVarP(&wait, "wait", "w", 10000,
+    Fuzz.Flags().IntVarP(&wait, "wait", "w", 1000,
         "(optional) the time to wait in between messages in milliseconds")
 }
 

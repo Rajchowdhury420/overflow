@@ -31,6 +31,7 @@ var base = `
 // fuzz command specific arguments template
 var fuzz = `
  :: Step        : %d
+ :: Wait        : %dms
 ──────────────────────────────────────────────────
 `
 
@@ -57,7 +58,7 @@ var exploit = `
 `
 
 // prints the title card when executing the fuzz command
-func FuzzTitle(host string, port int, step int) {
+func FuzzTitle(host string, port int, step int, wait int) {
     // print the title
     fmt.Print(title)
 
@@ -65,7 +66,7 @@ func FuzzTitle(host string, port int, step int) {
     fmt.Printf(base, "fuzz", host, port)
 
     // print the arguments passed to fuzz
-    fmt.Printf(fuzz, step)
+    fmt.Printf(fuzz, step, wait)
 }
 
 // prints the title when executing the pattern command

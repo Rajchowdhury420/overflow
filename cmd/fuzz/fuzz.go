@@ -11,6 +11,7 @@ var (
     host string
     port int
     step int
+    wait int
     pref string
     suff string
 )
@@ -44,14 +45,18 @@ func Init() {
     Fuzz.Flags().IntVarP(&step, "step", "S", 0,
         "the length by which each subsequent buffer is increased")
     Fuzz.MarkFlagRequired("step")
+
+    // wait time flag (optional)
+    Fuzz.Flags().IntVarP(&wait, "wait", "w", 10000,
+        "(optional) the time to wait in between messages in milliseconds")
 }
 
 // fuzz command subroutine
 func fuzz(cmd *cobra.Command, args []string) {
     // print the title card
-    cli.FuzzTitle(host, port, step)
+    cli.FuzzTitle(host, port, step, wait)
 
     // run the fuzz functionality
-    overflow.Fuzz(host, port, step, pref, suff)
+    overflow.Fuzz(host, port, step, wait, pref, suff)
 }
 

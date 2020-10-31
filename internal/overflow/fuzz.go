@@ -6,11 +6,8 @@ import (
     "time"
 )
 
-// sleep duration of 1s
-const sleep time.Duration = 1000000000
-
 // the main functionality of the fuzz subroutine
-func Fuzz(host string, port int, step int, pref, suff string) {
+func Fuzz(host string, port int, step int, wait int, pref, suff string) {
     var err error
     var length int
 
@@ -26,7 +23,7 @@ func Fuzz(host string, port int, step int, pref, suff string) {
         fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
         err = sendPayload(host, port, payload)
 
-        time.Sleep(sleep)
+        time.Sleep(time.Duration(wait) * time.Millisecond)
     }
 
     if length - step == step {
@@ -37,6 +34,6 @@ func Fuzz(host string, port int, step int, pref, suff string) {
 
     // print buffer information
     fmt.Printf("\n Success! Length of buffer is in range (%d, %d].\n",
-        length - step - step, length - step)
+        length - step, length)
 }
 

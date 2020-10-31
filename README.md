@@ -141,6 +141,7 @@ $ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
  :: Host        : 127.0.0.1
  :: Port        : 4444
  :: Step        : 100
+ :: Wait        : 1000ms
 ──────────────────────────────────────────────────
  > Building payload.
  > Sending 100-byte payload.

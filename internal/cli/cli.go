@@ -17,7 +17,7 @@ var title = `
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.0.1
+        v1.1.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────`
@@ -31,6 +31,7 @@ var base = `
 // fuzz command specific arguments template
 var fuzz = `
  :: Step        : %d
+ :: Wait        : %dms
 ──────────────────────────────────────────────────
 `
 
@@ -51,12 +52,13 @@ var chars = `
 var exploit = `
  :: Offset      : %d
  :: Jump        : "%s"
+ :: NOPs        : %d
  :: Shell       : %s
 ──────────────────────────────────────────────────
 `
 
 // prints the title card when executing the fuzz command
-func FuzzTitle(host string, port int, step int) {
+func FuzzTitle(host string, port int, step int, wait int) {
     // print the title
     fmt.Print(title)
 
@@ -64,7 +66,7 @@ func FuzzTitle(host string, port int, step int) {
     fmt.Printf(base, "fuzz", host, port)
 
     // print the arguments passed to fuzz
-    fmt.Printf(fuzz, step)
+    fmt.Printf(fuzz, step, wait)
 }
 
 // prints the title when executing the pattern command
@@ -92,7 +94,7 @@ func CharsTitle(host string, port int, offset int, exclude string) {
 }
 
 // prints the title when executing the exploit command
-func ExploitTitle(host string, port int, offset int, jump string,
+func ExploitTitle(host string, port int, offset int, jump string, nops int,
         shell string) {
     // print the title
     fmt.Print(title)
@@ -101,6 +103,6 @@ func ExploitTitle(host string, port int, offset int, jump string,
     fmt.Printf(base, "exploit", host, port)
 
     // print the arguments passed to exploit
-    fmt.Printf(exploit, offset, jump, shell)
+    fmt.Printf(exploit, offset, jump, nops, shell)
 }
 

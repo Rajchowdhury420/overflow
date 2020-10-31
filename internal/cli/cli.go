@@ -17,7 +17,7 @@ var title = `
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.0.1
+        v1.1.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────`
@@ -51,6 +51,7 @@ var chars = `
 var exploit = `
  :: Offset      : %d
  :: Jump        : "%s"
+ :: NOPs        : %d
  :: Shell       : %s
 ──────────────────────────────────────────────────
 `
@@ -92,7 +93,7 @@ func CharsTitle(host string, port int, offset int, exclude string) {
 }
 
 // prints the title when executing the exploit command
-func ExploitTitle(host string, port int, offset int, jump string,
+func ExploitTitle(host string, port int, offset int, jump string, nops int,
         shell string) {
     // print the title
     fmt.Print(title)
@@ -101,6 +102,6 @@ func ExploitTitle(host string, port int, offset int, jump string,
     fmt.Printf(base, "exploit", host, port)
 
     // print the arguments passed to exploit
-    fmt.Printf(exploit, offset, jump, shell)
+    fmt.Printf(exploit, offset, jump, nops, shell)
 }
 

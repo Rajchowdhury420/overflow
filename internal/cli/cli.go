@@ -17,7 +17,7 @@ var title = `
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.1.1
+        v1.2.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────`
@@ -41,6 +41,14 @@ var pattern = `
 ──────────────────────────────────────────────────
 `
 
+// offset command specific arguments template
+var offset = `
+ :: Query       : "%s"
+ :: Reverse     : %t
+ :: Length      : %d
+──────────────────────────────────────────────────
+`
+
 // chars command specific arguments template
 var chars = `
  :: Offset      : %d
@@ -52,6 +60,7 @@ var chars = `
 var exploit = `
  :: Offset      : %d
  :: Jump        : "%s"
+ :: Reverse     : %t
  :: NOPs        : %d
  :: Shell       : %s
 ──────────────────────────────────────────────────
@@ -81,6 +90,15 @@ func PatternTitle(host string, port int, length int) {
     fmt.Printf(pattern, length)
 }
 
+// prints the title when executing the offset command
+func OffsetTitle(query string, reverse bool, length int) {
+    // print the title
+    fmt.Print(title)
+
+    // print the arguments passed to offset
+    fmt.Printf(offset, query, reverse, length)
+}
+
 // prints the title when executing the chars command
 func CharsTitle(host string, port int, offset int, exclude string) {
     // print the title
@@ -94,8 +112,8 @@ func CharsTitle(host string, port int, offset int, exclude string) {
 }
 
 // prints the title when executing the exploit command
-func ExploitTitle(host string, port int, offset int, jump string, nops int,
-        shell string) {
+func ExploitTitle(host string, port int, offset int, jump string, reverse bool,
+        nops int, shell string) {
     // print the title
     fmt.Print(title)
 
@@ -103,6 +121,6 @@ func ExploitTitle(host string, port int, offset int, jump string, nops int,
     fmt.Printf(base, "exploit", host, port)
 
     // print the arguments passed to exploit
-    fmt.Printf(exploit, offset, jump, nops, shell)
+    fmt.Printf(exploit, offset, jump, reverse, nops, shell)
 }
 

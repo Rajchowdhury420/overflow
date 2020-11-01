@@ -34,6 +34,6 @@ func Fuzz(host string, port int, step int, wait int, pref, suff string) {
 
     // print buffer information
     fmt.Printf("\n Success! Length of buffer is in range (%d, %d].\n",
-        length - step, length)
+        length - step - step, length - step)
 }
 

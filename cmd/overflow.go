@@ -5,6 +5,7 @@ import (
     "github.com/spf13/cobra"
     "github.com/sradley/overflow/cmd/fuzz"
     "github.com/sradley/overflow/cmd/pattern"
+    "github.com/sradley/overflow/cmd/offset"
     "github.com/sradley/overflow/cmd/chars"
     "github.com/sradley/overflow/cmd/exploit"
 )
@@ -31,6 +32,10 @@ func init() {
     // initialise pattern subcommand
     root.AddCommand(pattern.Pattern)
     pattern.Init()
+
+    // initialise the offset subcommand
+    root.AddCommand(offset.Offset)
+    offset.Init()
 
     // initialise chars subcommand
     root.AddCommand(chars.Chars)

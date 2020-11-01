@@ -148,16 +148,40 @@ func TestParseHexInvalid(t *testing.T) {
 
 // test reversing empty byte array
 func TestReverseBytesEmpty(t *testing.T) {
-    t.Errorf("test not implemented")
+    // reverse empty byte array
+    data := []byte{}
+    reverseBytes(data)
+
+    // if data not empty, test failed
+    if len(data) != 0 {
+        t.Errorf("len(data) = %d, want %d", len(data), 0)
+    }
 }
 
 // test reversing small byte array
 func TestReverseBytesSmall(t *testing.T) {
-    t.Errorf("test not implemented")
+    // reverse small byte array
+    data := []byte{0x41, 0x42, 0x43, 0x44}
+    reverseBytes(data)
+
+    if string(data) != "DCBA" {
+        t.Errorf("string(data) = %s, want %s", string(data), "DCBA")
+    }
 }
 
 // test reversing large byte array
 func TestReverseBytesLarge(t *testing.T) {
-    t.Errorf("test not implemented")
+    // reverse large byte array
+    data := []byte{
+        0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a,
+        0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54,
+        0x55, 0x56, 0x57, 0x58, 0x59, 0x5a,
+    }
+    reverseBytes(data)
+
+    if string(data) != "ZYXWVUTSRQPONMLKJIHGFEDCBA" {
+        t.Errorf("string(data) = %s, want %s", string(data),
+            "ZYXWVUTSRQPONMLKJIHGFEDCBA")
+    }
 }
 

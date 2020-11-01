@@ -5,7 +5,7 @@ import (
     "strings"
 )
 
-// ...
+// length of the cyclic pattern before it starts to repeat
 const maxPatternLen int = 20280
 
 // the main functionality of the offset subroutine 
@@ -43,9 +43,13 @@ func Offset(query string, reverse bool, length int) {
     fmt.Printf("\n Success! Pattern offset is: %d\n", result)
 }
 
-// ...
+// find the offset of the given sub-pattern
 func findSubPattern(query string, length int) int {
-    // ...
+    if len(query) == 0 {
+        return -1
+    }
+
+    // generate the whole pattern
     var pstr string
     if length > 0 {
         pstr = string(cyclicPattern(length))
@@ -53,7 +57,7 @@ func findSubPattern(query string, length int) int {
         pstr = string(cyclicPattern(maxPatternLen))
     }
 
-    // ...
+    // find the last occurrence of the sub-pattern within the pattern
     return strings.LastIndex(pstr, query)
 }
 

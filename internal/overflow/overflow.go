@@ -19,7 +19,8 @@ func createPayload(data []byte, pref, suff string) []byte {
 }
 
 // send a payload to the target service
-func sendPayload(host string, port int, payload []byte) error {
+func sendPayload(host string, port int, payload []byte,
+        pref, suff string) error {
     // build uri for target service
     target := fmt.Sprintf("%s:%d", host, port)
 
@@ -33,10 +34,43 @@ func sendPayload(host string, port int, payload []byte) error {
     // set I/O timeout
     if err = conn.SetDeadline(time.Now().Add(timeout)); err != nil {
         return err
+     }
+
+     fmt.Printf(" > Sending %d-byte payload.\n",
+        len(pref) + len(payload) + len(suff))
+
+    // wait for a response
+    buf := make([]byte, 1024)
+    if _, err := conn.Read(buf); err != nil {
+        return err
+    }
+
+    // send prefix to target service
+    msgs := strings.Split(pref, "\\r\\n")
+    for i, msg := range msgs {
+        if i == len(msgs) - 1 {
+            break
+        }
+
+        if err = sendData(conn, []byte(msg + "\r\n")); err != nil {
+            return err
+        }
     }
 
     // send payload to target service
-    if _, err = conn.Write(payload); err != nil {
+    data := createPayload(payload, msgs[len(msgs) - 1], suff)
+    if err = sendData(conn, data); err != nil {
+        return err
+    }
+
+    // payload was sent successfully
+    return nil
+}
+
+// send bytes to target service and wait for a response
+func sendData(conn net.Conn, data []byte) error {
+    // send data to target service
+    if _, err := conn.Write(data); err != nil {
         return err
     }
 
@@ -46,7 +80,6 @@ func sendPayload(host string, port int, payload []byte) error {
         return err
     }
 
-    // payload was sent successfully
     return nil
 }
 

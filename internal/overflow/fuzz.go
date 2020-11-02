@@ -16,12 +16,12 @@ func Fuzz(host string, port int, step int, wait int, pref, suff string) {
         data := generateBytes(0x41, length)
 
         // build payload
-        fmt.Println(" > Building payload.")
-        payload := createPayload(data, pref, suff)
+        //fmt.Println(" > Building payload.")
+        //payload := createPayload(data, pref, suff)
 
         // send payload to target service
-        fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
-        err = sendPayload(host, port, payload)
+        //fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
+        err = sendPayload(host, port, data, pref, suff)
 
         time.Sleep(time.Duration(wait) * time.Millisecond)
     }

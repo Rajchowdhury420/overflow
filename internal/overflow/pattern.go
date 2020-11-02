@@ -12,12 +12,12 @@ func Pattern(host string, port int, length int, pref, suff string) {
     data := cyclicPattern(length)
 
     // build payload
-    fmt.Println(" > Building payload.")
-    payload := createPayload(data, pref, suff)
+    //fmt.Println(" > Building payload.")
+    //payload := createPayload(data, pref, suff)
 
     // send payload to target service
-    fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
-    err := sendPayload(host, port, payload)
+    //fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
+    err := sendPayload(host, port, data, pref, suff)
 
     // notify user of error if one has occurred
     if err != nil {

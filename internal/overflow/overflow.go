@@ -39,12 +39,6 @@ func sendPayload(host string, port int, payload []byte,
      fmt.Printf(" > Sending %d-byte payload.\n",
         len(pref) + len(payload) + len(suff))
 
-    // wait for a response
-    buf := make([]byte, 1024)
-    if _, err := conn.Read(buf); err != nil {
-        return err
-    }
-
     // send prefix to target service
     msgs := strings.Split(pref, "\\r\\n")
     for i, msg := range msgs {

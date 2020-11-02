@@ -9,7 +9,7 @@ import (
 )
 
 // timeout used for connection and I/O
-const timeout time.Duration = 3000000000
+const timeout time.Duration = 5000000000
 
 // creates a payload to send to the target service
 func createPayload(data []byte, pref, suff string) []byte {
@@ -34,13 +34,17 @@ func sendPayload(host string, port int, payload []byte,
     // set I/O timeout
     if err = conn.SetDeadline(time.Now().Add(timeout)); err != nil {
         return err
-     }
+    }
 
-     fmt.Printf(" > Sending %d-byte payload.\n",
+    fmt.Printf(" > Sending %d-byte payload.\n",
         len(pref) + len(payload) + len(suff))
 
+    // replace escaped newlines in prefix
+    pref = strings.Join(strings.Split(pref, "\\r\\n"), "\r\n")
+    pref = strings.Join(strings.Split(pref, "\\n"), "\r\n")
+
     // send prefix to target service
-    msgs := strings.Split(pref, "\\r\\n")
+    msgs := strings.Split(pref, "\r\n")
     for i, msg := range msgs {
         if i == len(msgs) - 1 {
             break
@@ -50,6 +54,10 @@ func sendPayload(host string, port int, payload []byte,
             return err
         }
     }
+
+    // replace escaped newlines in suffix
+    suff = strings.Join(strings.Split(suff, "\\r\\n"), "\r\n")
+    suff = strings.Join(strings.Split(suff, "\\n"), "\r\n")
 
     // send payload to target service
     data := createPayload(payload, msgs[len(msgs) - 1], suff)

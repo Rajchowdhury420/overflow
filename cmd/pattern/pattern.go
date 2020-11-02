@@ -11,8 +11,7 @@ var (
     host   string
     port   int
     length int
-    pref   string
-    suff   string
+    tmpl   string
 )
 
 // pattern command definition
@@ -34,16 +33,14 @@ func Init() {
         "the port the target service is running on")
     Pattern.MarkFlagRequired("port")
 
-    // prefix and suffix flags (optional)
-    Pattern.Flags().StringVarP(&pref, "prefix", "p", "",
-        "(optional) prefix to put before payload")
-    Pattern.Flags().StringVarP(&suff, "suffix", "s", "",
-        "(optional) suffix to put after payload")
-
     // length flag (required)
     Pattern.Flags().IntVarP(&length, "length", "l", 0,
         "the length of the cyclic pattern sent to the target")
     Pattern.MarkFlagRequired("length")
+
+    // template flag (optional)
+    Pattern.Flags().StringVarP(&tmpl, "template", "t", "{payload}",
+        "(optional) template to format payload with, see docs for more info")
 }
 
 // pattern command subroutine
@@ -52,6 +49,7 @@ func pattern(cmd *cobra.Command, args []string) {
     cli.PatternTitle(host, port, length)
 
     // run the pattern functionality
-    overflow.Pattern(host, port, length, pref, suff)
+    p := overflow.NewPattern(length)
+    p.Run(overflow.NewHost(host, port), tmpl)
 }
 

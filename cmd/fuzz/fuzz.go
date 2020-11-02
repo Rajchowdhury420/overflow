@@ -12,8 +12,7 @@ var (
     port int
     step int
     wait int
-    pref string
-    suff string
+    tmpl string
 )
 
 // fuzz command definition
@@ -35,12 +34,6 @@ func Init() {
         "the port the target service is running on")
     Fuzz.MarkFlagRequired("port")
 
-    // prefix and suffix flags (optional)
-    Fuzz.Flags().StringVarP(&pref, "prefix", "p", "",
-        "(optional) prefix to put before payload")
-    Fuzz.Flags().StringVarP(&suff, "suffix", "s", "",
-        "(optional) suffix to put after payload")
-
     // step size flag (required)
     Fuzz.Flags().IntVarP(&step, "step", "S", 0,
         "the length by which each subsequent buffer is increased")
@@ -49,6 +42,10 @@ func Init() {
     // wait time flag (optional)
     Fuzz.Flags().IntVarP(&wait, "wait", "w", 1000,
         "(optional) the time to wait in between messages in milliseconds")
+
+    // template flag (optional)
+    Fuzz.Flags().StringVarP(&tmpl, "template", "t", "{payload}",
+        "(optional) template to format payload with, see docs for more info")
 }
 
 // fuzz command subroutine
@@ -57,6 +54,7 @@ func fuzz(cmd *cobra.Command, args []string) {
     cli.FuzzTitle(host, port, step, wait)
 
     // run the fuzz functionality
-    overflow.Fuzz(host, port, step, wait, pref, suff)
+    f := overflow.NewFuzz(step, wait)
+    f.Run(overflow.NewHost(host, port), tmpl)
 }
 

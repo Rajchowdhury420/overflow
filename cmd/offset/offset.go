@@ -42,5 +42,6 @@ func offset(cmd *cobra.Command, args []string) {
     cli.OffsetTitle(query, reverse, length)
 
     // run the offset functionality 
-    overflow.Offset(query, reverse, length)
+    o := overflow.NewOffset(query, reverse, length)
+    o.Run()
 }

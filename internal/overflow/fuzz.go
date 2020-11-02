@@ -6,27 +6,38 @@ import (
     "time"
 )
 
-// the main functionality of the fuzz subroutine
-func Fuzz(host string, port int, step int, wait int, pref, suff string) {
+// ...
+type Fuzz struct {
+    step int
+    wait int
+}
+
+// ...
+func NewFuzz(step int, wait int) Fuzz {
+    return Fuzz{ step, wait }
+}
+
+// ...
+func (f Fuzz) Run(host Host, tmpl string) {
     var err error
     var length int
 
-    for length = step; err == nil; length += step {
+    for length = f.step; err == nil; length += f.step {
         // create n-byte byte array
         data := generateBytes(0x41, length)
 
         // build payload
-        //fmt.Println(" > Building payload.")
-        //payload := createPayload(data, pref, suff)
+        fmt.Println(" > Building payload.")
+        payload := Payload{ data, tmpl }
 
         // send payload to target service
-        //fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
-        err = sendPayload(host, port, data, pref, suff)
+        fmt.Printf(" > Sending %d-byte payload.\n", payload.Size())
+        err = host.SendPayload(payload)
 
-        time.Sleep(time.Duration(wait) * time.Millisecond)
+        time.Sleep(time.Duration(f.wait) * time.Millisecond)
     }
 
-    if length - step == step {
+    if length - f.step == f.step {
         // no payload was sent, an error occurred
         fmt.Printf("\n Error! %s\n", err.(*net.OpError).Err)
         return
@@ -34,6 +45,6 @@ func Fuzz(host string, port int, step int, wait int, pref, suff string) {
 
     // print buffer information
     fmt.Printf("\n Success! Length of buffer is in range (%d, %d].\n",
-        length - step - step, length - step)
+        length - f.step - f.step, length - f.step)
 }
 

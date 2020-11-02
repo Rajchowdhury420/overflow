@@ -5,22 +5,30 @@ import (
     "net"
 )
 
-// the main functionality of the pattern subroutine
-func Pattern(host string, port int, length int, pref, suff string) {
+// ...
+type Pattern struct {
+    length int
+}
+
+// ...
+func NewPattern(length int) Pattern {
+    return Pattern{ length }
+}
+
+// ...
+func (p Pattern) Run(host Host, tmpl string) {
     // create n-byte cyclic pattern
     fmt.Println(" > Generating pattern.")
-    data := cyclicPattern(length)
+    data := cyclicPattern(p.length)
 
     // build payload
-    //fmt.Println(" > Building payload.")
-    //payload := createPayload(data, pref, suff)
+    fmt.Println(" > Building payload.")
+    payload := Payload{ data, tmpl }
 
     // send payload to target service
-    //fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
-    err := sendPayload(host, port, data, pref, suff)
-
-    // notify user of error if one has occurred
-    if err != nil {
+    fmt.Printf(" > Sending %d-byte payload.\n", payload.Size())
+    if err := host.SendPayload(payload); err != nil {
+        // notify user of error if one has occurred
         fmt.Printf("\n Error! %s\n", err.(*net.OpError).Err)
         return
     }

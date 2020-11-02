@@ -8,30 +8,42 @@ import (
 // length of the cyclic pattern before it starts to repeat
 const maxPatternLen int = 20280
 
-// the main functionality of the offset subroutine 
-func Offset(query string, reverse bool, length int) {
+// ...
+type Offset struct {
+    query   string
+    reverse bool
+    length  int
+}
+
+// ...
+func NewOffset(query string, reverse bool, length int) Offset {
+    return Offset{ query, reverse, length }
+}
+
+// ...
+func (o Offset) Run() {
     // parse the bytes in the sub-pattern
     fmt.Println(" > Parsing query.")
-    if len(query) != 16 {
-        fmt.Printf("\n Error! invalid query length '%s'\n", query)
+    if len(o.query) != 16 {
+        fmt.Printf("\n Error! invalid query length '%s'\n", o.query)
         return
     }
 
     // decode jump address
-    addr, err := parseHex(query)
+    addr, err := parseHex(o.query)
     if err != nil {
-        fmt.Printf("\n Error! invalid bytes in query '%s'\n", query)
+        fmt.Printf("\n Error! invalid bytes in query '%s'\n", o.query)
         return
     }
 
     // reverse endianness if specified
-    if reverse {
+    if o.reverse {
         reverseBytes(addr)
     }
 
     // attempt to find the pattern offset
     fmt.Println(" > Searching for query within pattern.")
-    result := findSubPattern(string(addr), length)
+    result := findSubPattern(string(addr), o.length)
 
     // if no pattern offset found, print error
     if result == -1 {

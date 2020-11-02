@@ -12,8 +12,7 @@ var (
     port    int
     offset  int
     exclude string
-    pref    string
-    suff    string
+    tmpl    string
 )
 
 // chars command definition
@@ -35,12 +34,6 @@ func Init() {
         "the port the target service is running on")
     Chars.MarkFlagRequired("port")
 
-    // prefix and suffix flags (optional)
-    Chars.Flags().StringVarP(&pref, "prefix", "p", "",
-        "(optional) prefix to put before payload")
-    Chars.Flags().StringVarP(&suff, "suffix", "s", "",
-        "(optional) suffix to put after payload")
-
     // offset flag (required)
     Chars.Flags().IntVarP(&offset, "offset", "o", 0,
         "the offset of the EIP register")
@@ -49,6 +42,10 @@ func Init() {
     // exclude flag (optional)
     Chars.Flags().StringVarP(&exclude, "exclude", "e", "",
         "(optional) characters to exclude from payload")
+
+    // template flag (optional)
+    Chars.Flags().StringVarP(&tmpl, "template", "t", "{payload}",
+        "(optional) template to format payload with, see docs for more info")
 }
 
 // chars command subroutine
@@ -57,6 +54,7 @@ func chars(cmd *cobra.Command, args []string) {
     cli.CharsTitle(host, port, offset, exclude)
 
     // run the chars functionality
-    overflow.Chars(host, port, offset, exclude, pref, suff)
+    c := overflow.NewChars(offset, exclude)
+    c.Run(overflow.NewHost(host, port), tmpl)
 }
 

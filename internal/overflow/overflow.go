@@ -44,15 +44,8 @@ func sendPayload(host string, port int, payload []byte,
     pref = strings.Join(strings.Split(pref, "\\n"), "\r\n")
 
     // send prefix to target service
-    msgs := strings.Split(pref, "\r\n")
-    for i, msg := range msgs {
-        if i == len(msgs) - 1 {
-            break
-        }
-
-        if err = sendData(conn, []byte(msg + "\r\n")); err != nil {
-            return err
-        }
+    if err = sendAffix(conn, pref); err != nil {
+        return err
     }
 
     // replace escaped newlines in suffix
@@ -66,6 +59,23 @@ func sendPayload(host string, port int, payload []byte,
     }
 
     // payload was sent successfully
+    return nil
+}
+
+// ...
+func sendAffix(conn net.Conn, affix string) error {
+    // send affix to target service
+    msgs := strings.Split(affix, "\r\n")
+    for i, msg := range msgs {
+        if i == len(msgs) - 1 {
+            break
+        }
+
+        if err = sendData(conn, []byte(msg + "\r\n")); err != nil {
+            return err
+        }
+    }
+
     return nil
 }
 

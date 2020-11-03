@@ -8,7 +8,7 @@ import (
 
 // arguments taken by the chars command
 var (
-    host    string
+    addr    string
     port    int
     offset  int
     exclude string
@@ -25,12 +25,12 @@ var Chars = &cobra.Command{
 // initialisation function for all arguments taken by the chars command
 func Init() {
     // host flag (required)
-    Chars.Flags().StringVarP(&host, "host", "H", "",
+    Chars.Flags().StringVarP(&addr, "addr", "a", "",
         "the target machine's IP address")
-    Chars.MarkFlagRequired("host")
+    Chars.MarkFlagRequired("addr")
 
     // port flag (required)
-    Chars.Flags().IntVarP(&port, "port", "P", 0,
+    Chars.Flags().IntVarP(&port, "port", "p", 0,
         "the port the target service is running on")
     Chars.MarkFlagRequired("port")
 
@@ -51,10 +51,10 @@ func Init() {
 // chars command subroutine
 func chars(cmd *cobra.Command, args []string) {
     // print the title card
-    cli.CharsTitle(host, port, offset, exclude)
+    cli.CharsTitle(addr, port, offset, exclude)
 
     // run the chars functionality
     c := overflow.NewChars(offset, exclude)
-    c.Run(overflow.NewHost(host, port), tmpl)
+    c.Run(overflow.NewHost(addr, port), tmpl)
 }
 

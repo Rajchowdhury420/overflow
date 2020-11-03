@@ -6,64 +6,67 @@ import (
 
 // title card template
 var title = `
-  ██████╗ ██╗   ██╗███████╗██████╗
- ██╔═══██╗██║   ██║██╔════╝██╔══██╗
- ██║   ██║██║   ██║█████╗  ██████╔╝
- ██║   ██║╚██╗ ██╔╝██╔══╝  ██╔══██╗
- ╚██████╔╝ ╚████╔╝ ███████╗██║  ██║
-  ╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═╝
-           ███████╗██╗      ██████╗ ██╗    ██╗
-           ██╔════╝██║     ██╔═══██╗██║    ██║
-           █████╗  ██║     ██║   ██║██║ █╗ ██║
-           ██╔══╝  ██║     ██║   ██║██║███╗██║
-           ██║     ███████╗╚██████╔╝╚███╔███╔╝
-           ╚═╝     ╚══════╝ ╚═════╝  ╚══╝╚══╝ 
- v2.0.0
+            /------------------\  lower
+            |                  |  memory
+            |       Text       |  addresses
+            |                  |
+            |------------------|
+            |   (Initialized)  |
+            |        Data      |
+            |  (Uninitialized) |
+            |------------------|
+            |                  |
+            |       Stack      |  higher
+            |                  |  memory
+            \------------------/  addresses
 
+        Fig. 1 Process Memory Regions
+ 
+ v2.0.0
  by Stephen Radley          github.com/sradley
 ───────────────────────────────────────────────`
 
 // default arguments template
 var base = `
- :: Mode        : %s
- :: Host        : %s
- :: Port        : %d`
+  . mode                : %s
+  . (-a|--addr)         : %s
+  . (-p|--port)         : %d`
 
 // fuzz command specific arguments template
 var fuzz = `
- :: Step        : %d
- :: Wait        : %dms
+  . (-s|--step)         : %d
+  . (-w|--wait)         : %dms
 ───────────────────────────────────────────────
 `
 
 // pattern command specific arguments template
 var pattern = `
- :: Length      : %d
+  . (-l|--length)       : %d
 ───────────────────────────────────────────────
 `
 
 // offset command specific arguments template
 var offset = `
- :: Query       : "%s"
- :: Reverse     : %t
- :: Length      : %d
+  . (-q|--query)        : "%s"
+  . (-r|--reverse)      : %t
+  . (-l|--length)       : %d
 ───────────────────────────────────────────────
 `
 
 // chars command specific arguments template
 var chars = `
- :: Offset      : %d
- :: Exclude     : "%s"
+  . (-o|--offset)       : %d
+  . (-e|--exclude)      : "%s"
 ───────────────────────────────────────────────
 `
 
 // exploit command specific arguments template
 var exploit = `
- :: Offset      : %d
- :: Jump        : "%s"
- :: Reverse     : %t
- :: NOPs        : %d
- :: Shell       : %s
+  . (-o|--offset)       : %d
+  . (-j|--jump)         : "%s"
+  . (-r|--reverse)      : %t
+  . (-n|--nos)          : %d
+  . (-s|--shell)        : %s
 ───────────────────────────────────────────────
 `
 

@@ -19,10 +19,10 @@ func NewChars(offset int, exclude string) Chars {
 // ...
 func (c Chars) Run(host Host, tmpl string) {
     // parse exclusions
-    fmt.Println(" > Parsing exclusions.")
+    fmt.Println(" > parsing exclusions")
     exclusions, err := parseHex(c.exclude)
     if err != nil {
-        fmt.Println("\n Error! couldn't parse exclude string")
+        fmt.Printf("\n error: %s\n", err)
         return
     }
 
@@ -30,22 +30,22 @@ func (c Chars) Run(host Host, tmpl string) {
     pad := generateBytes(0x41, c.offset + 4)
 
     // generate the byte array of characters to send to the target service
-    fmt.Println(" > Generating characters.")
+    fmt.Println(" > generating characters")
     data := append(pad, generateCharacters(exclusions)...)
 
     // build payload
-    fmt.Println(" > Building payload.")
+    fmt.Println(" > building payload")
     payload := Payload{ data, tmpl }
 
     // send payload to target service
-    fmt.Printf(" > Sending %d-byte payload.\n", payload.Size())
+    fmt.Printf(" > sending %d-byte payload\n", payload.Size())
     if err = host.SendPayload(payload); err != nil {
-        fmt.Printf("\n Error! %s\n", err.(*net.OpError).Err)
+        fmt.Printf("\n error: %s\n", err.(*net.OpError).Err)
         return
     }
 
     // notify user that the payload was successfully delivered
-    fmt.Println("\n Success! No errors found.")
+    fmt.Println("\n success: no errors found")
 }
 
 // generates a slice of bytes from 0x00 to 0xFF, excluding specified bytes
@@ -75,3 +75,4 @@ func generateCharacters(exclude []byte) []byte {
 
     return data
 }
+

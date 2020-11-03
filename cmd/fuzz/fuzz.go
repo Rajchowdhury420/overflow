@@ -8,7 +8,7 @@ import (
 
 // arguments taken by the fuzz command
 var (
-    host string
+    addr string
     port int
     step int
     wait int
@@ -25,12 +25,12 @@ var Fuzz = &cobra.Command{
 // initialisation function for all arguments taken by the fuzz command
 func Init() {
     // host flag (required)
-    Fuzz.Flags().StringVarP(&host, "host", "H", "",
+    Fuzz.Flags().StringVarP(&addr, "addr", "a", "",
         "the target machine's IP address")
-    Fuzz.MarkFlagRequired("host")
+    Fuzz.MarkFlagRequired("addr")
 
     // port flag (required)
-    Fuzz.Flags().IntVarP(&port, "port", "P", 0,
+    Fuzz.Flags().IntVarP(&port, "port", "p", 0,
         "the port the target service is running on")
     Fuzz.MarkFlagRequired("port")
 
@@ -51,10 +51,10 @@ func Init() {
 // fuzz command subroutine
 func fuzz(cmd *cobra.Command, args []string) {
     // print the title card
-    cli.FuzzTitle(host, port, step, wait)
+    cli.FuzzTitle(addr, port, step, wait)
 
     // run the fuzz functionality
     f := overflow.NewFuzz(step, wait)
-    f.Run(overflow.NewHost(host, port), tmpl)
+    f.Run(overflow.NewHost(addr, port), tmpl)
 }
 

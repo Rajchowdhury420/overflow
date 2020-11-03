@@ -6,24 +6,23 @@ import (
     "time"
 )
 
-// ...
+// contains fuzz subcommand specific parameters
 type Fuzz struct {
     step int
     wait int
 }
 
-// ...
+// creates a new fuzz object to store parameters
 func NewFuzz(step int, wait int) Fuzz {
     return Fuzz{ step, wait }
 }
 
-// ...
+// the main functionality of the fuzz subcommand
 func (f Fuzz) Run(host Host, tmpl string) {
-    // ...
     var err error
     var length int
 
-    // ...
+    // increase the length of the payload until server crashes
     for length = f.step; err == nil; length += f.step {
         err = f.SendLength(host, tmpl, length)
         time.Sleep(time.Duration(f.wait) * time.Millisecond)
@@ -40,7 +39,7 @@ func (f Fuzz) Run(host Host, tmpl string) {
         length - f.step - f.step, length - f.step)
 }
 
-// ...
+// send a specific length payload to the target service
 func (f Fuzz) SendLength(host Host, tmpl string, length int) error {
     // create n-byte byte array
     data := generateBytes(0x41, length)

@@ -9,19 +9,19 @@ import (
 // length of the cyclic pattern before it starts to repeat
 const maxPatternLen int = 20280
 
-// ...
+// contains offset subcommand specific parameters
 type Offset struct {
     query   string
     reverse bool
     length  int
 }
 
-// ...
+// creates a new offset object to store parameters
 func NewOffset(query string, reverse bool, length int) Offset {
     return Offset{ query, reverse, length }
 }
 
-// ...
+// the main functionality of the offset subcommand
 func (o Offset) Run() {
     // parse the bytes in the sub-pattern
     fmt.Println(" > parsing query")
@@ -45,6 +45,7 @@ func (o Offset) Run() {
     fmt.Printf("\n success: pattern offset is: %d\n", result)
 }
 
+// decodes the query address
 func (o Offset) DecodeQuery() ([]byte, error) {
     // check the length of the sub-pattern
     if len(o.query) != 16 {

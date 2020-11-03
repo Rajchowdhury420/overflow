@@ -11,29 +11,29 @@ import (
 // timeout used for connection and I/O
 const timeout time.Duration = 5000000000
 
-// ...
+// struct used to contain host information
 type Host struct {
     addr string
     port int
 }
 
-// ...
+// struct used to contain payload data and templates
 type Payload struct {
     data []byte
     tmpl string
 }
 
-// ...
+// creates a new host struct
 func NewHost(addr string, port int) Host {
     return Host{ addr, port }
 }
 
-// ...
+// converts the host struct to string in the format "addr:port"
 func (h Host) ToString() string {
     return fmt.Sprintf("%s:%d", h.addr, h.port)
 }
 
-// ...
+// sends a payload to the target host
 func (h Host) SendPayload(payload Payload) error {
     // connect to target service
     conn, err := net.DialTimeout("tcp", h.ToString(), timeout)
@@ -47,13 +47,13 @@ func (h Host) SendPayload(payload Payload) error {
         return err
     }
 
-    // ...
+    // apply the template to the payload
     data, err := payload.ApplyTemplate()
     if err != nil {
         return err
     }
 
-    // ...
+    // split payload up into individual messages and send them
     msgs := strings.Split(string(data), "<CR>")
     for i, msg := range msgs {
         // what about messages that don't end in <RT>, i.e the last message
@@ -79,7 +79,7 @@ func (h Host) SendPayload(payload Payload) error {
     return nil
 }
 
-// ...
+// send bytes to the target host
 func (h Host) SendData(conn net.Conn, data []byte) error {
     // send data to target service
     if _, err := conn.Write(data); err != nil {
@@ -95,12 +95,12 @@ func (h Host) SendData(conn net.Conn, data []byte) error {
     return nil
 }
 
-// ...
+// get the size of the payload in bytes
 func (p Payload) Size() int {
     return len(p.data)
 }
 
-// ...
+// apply payload template to payload data
 func (p Payload) ApplyTemplate() ([]byte, error) {
     // check that payload exists
     if !strings.Contains(p.tmpl, "{payload}") {

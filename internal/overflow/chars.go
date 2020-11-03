@@ -5,18 +5,18 @@ import (
     "net"
 )
 
-// ...
+// contains chars subcommand specific parameters
 type Chars struct {
     offset  int
     exclude string
 }
 
-// ...
+// creates a new chars object to store parameters
 func NewChars(offset int, exclude string) Chars {
     return Chars{ offset, exclude }
 }
 
-// ...
+// the main functionality of the chars subcommand
 func (c Chars) Run(host Host, tmpl string) {
     // parse exclusions
     fmt.Println(" > parsing exclusions")

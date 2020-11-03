@@ -5,17 +5,17 @@ import (
     "net"
 )
 
-// ...
+// contains pattern subcommand specific parameters
 type Pattern struct {
     length int
 }
 
-// ...
+// creates a new pattern objecft to store parameters
 func NewPattern(length int) Pattern {
     return Pattern{ length }
 }
 
-// ...
+// the main functionality of the pattern subcommand
 func (p Pattern) Run(host Host, tmpl string) {
     // create n-byte cyclic pattern
     fmt.Println(" > generating pattern")

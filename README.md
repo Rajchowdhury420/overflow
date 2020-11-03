@@ -161,10 +161,37 @@ Take a look at [Examples: Running Exploits](#example-exploit) for a more
 comprehensive example.
 
 ## Templating
-"username<CR>{payload}<CR>"
+Templates allow you to insert data before and/or after your payload. They also
+allow you to navigate through, for example, a menu that you are presented with.
+
+Say you needed to prefix your payload with the string "OVERFLOW1", in order to
+execute your buffer overflow. You could provide a template like this:
+```
+$ overflow ... --template "OVERFLOW1 {payload}"
+```
 
 ### Special Characters
-"<CR>"
+The only special character of note (and currently supported) is the "<CR>"
+special character. Not only does it insert `\r\n`, but the tool treats it as
+the end of a message.
+
+Say when you connect to the target service you presented with the following.
+```
+Username: <user-input>
+Message:  <user-input>
+```
+
+But the buffer overflow is in the "message" part of the service. A template to
+exploit this would be: `"stephen<CR>{payload}<CR>". Resulting in an information
+flow kind of like this:
+```
+Username: stephen
+Message:  <payload>
+```
+
+In the above template, the `stephen<CR>` and `{payload}<CR>` parts are treated
+as separate messages, allowing you to navigate the menu and insert your buffer
+overflow where you need it.
 
 ## Examples
 

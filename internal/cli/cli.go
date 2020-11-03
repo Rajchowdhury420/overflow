@@ -6,64 +6,68 @@ import (
 
 // title card template
 var title = `
-  ______   __   __ ______   ______
- /\  __ \ /\ \ / //\  ___\ /\  == \
- \ \ \/\ \\ \ \'/ \ \  __\ \ \  __< 
-  \ \_____\\ \__|  \ \_____\\ \_\ \_\
-   \/_____/ \/_/    \/_____/ \/_/ /_/
-      ______  __       ______   __     __
-     /\  ___\/\ \     /\  __ \ /\ \  _ \ \
-     \ \  __\\ \ \____\ \ \/\ \\ \ \/ ".\ \
-      \ \_\   \ \_____\\ \_____\\ \__/".~\_\
-       \/_/    \/_____/ \/_____/ \/_/   \/_/
+            /------------------\  lower
+            |                  |  memory
+            |       Text       |  addresses
+            |                  |
+            |------------------|
+            |   (Initialized)  |
+            |        Data      |
+            |  (Uninitialized) |
+            |------------------|
+            |                  |
+            |       Stack      |  higher
+            |                  |  memory
+            \------------------/  addresses
 
-        v1.2.0
-
- by Stephen Radley             github.com/sradley
-──────────────────────────────────────────────────`
+        Fig. 1 Process Memory Regions
+ 
+ github.com/sradley                     v2.0.0
+───────────────────────────────────────────────`
 
 // default arguments template
 var base = `
- :: Mode        : %s
- :: Host        : %s
- :: Port        : %d`
+  . mode                : %s
+  . (-a|--addr)         : %s
+  . (-p|--port)         : %d`
 
 // fuzz command specific arguments template
 var fuzz = `
- :: Step        : %d
- :: Wait        : %dms
-──────────────────────────────────────────────────
+  . (-s|--step)         : %d
+  . (-w|--wait)         : %dms
+───────────────────────────────────────────────
 `
 
 // pattern command specific arguments template
 var pattern = `
- :: Length      : %d
-──────────────────────────────────────────────────
+  . (-l|--length)       : %d
+───────────────────────────────────────────────
 `
 
 // offset command specific arguments template
 var offset = `
- :: Query       : "%s"
- :: Reverse     : %t
- :: Length      : %d
-──────────────────────────────────────────────────
+  . mode                : offset
+  . (-q|--query)        : "%s"
+  . (-r|--reverse)      : %t
+  . (-l|--length)       : %d
+───────────────────────────────────────────────
 `
 
 // chars command specific arguments template
 var chars = `
- :: Offset      : %d
- :: Exclude     : "%s"
-──────────────────────────────────────────────────
+  . (-o|--offset)       : %d
+  . (-e|--exclude)      : "%s"
+───────────────────────────────────────────────
 `
 
 // exploit command specific arguments template
 var exploit = `
- :: Offset      : %d
- :: Jump        : "%s"
- :: Reverse     : %t
- :: NOPs        : %d
- :: Shell       : %s
-──────────────────────────────────────────────────
+  . (-o|--offset)       : %d
+  . (-j|--jump)         : "%s"
+  . (-r|--reverse)      : %t
+  . (-n|--nos)          : %d
+  . (-s|--shell)        : %s
+───────────────────────────────────────────────
 `
 
 // prints the title card when executing the fuzz command

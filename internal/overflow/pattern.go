@@ -5,28 +5,36 @@ import (
     "net"
 )
 
-// the main functionality of the pattern subroutine
-func Pattern(host string, port int, length int, pref, suff string) {
+// contains pattern subcommand specific parameters
+type Pattern struct {
+    length int
+}
+
+// creates a new pattern objecft to store parameters
+func NewPattern(length int) Pattern {
+    return Pattern{ length }
+}
+
+// the main functionality of the pattern subcommand
+func (p Pattern) Run(host Host, tmpl string) {
     // create n-byte cyclic pattern
-    fmt.Println(" > Generating pattern.")
-    data := cyclicPattern(length)
+    fmt.Println(" > generating pattern")
+    data := cyclicPattern(p.length)
 
     // build payload
-    fmt.Println(" > Building payload.")
-    payload := createPayload(data, pref, suff)
+    fmt.Println(" > building payload")
+    payload := Payload{ data, tmpl }
 
     // send payload to target service
-    fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
-    err := sendPayload(host, port, payload)
-
-    // notify user of error if one has occurred
-    if err != nil {
-        fmt.Printf("\n Error! %s\n", err.(*net.OpError).Err)
+    fmt.Printf(" > sending %d-byte payload\n", payload.Size())
+    if err := host.SendPayload(payload); err != nil {
+        // notify user of error if one has occurred
+        fmt.Printf("\n error: %s\n", err.(*net.OpError).Err)
         return
     }
 
     // notify user that the payload was successfully delivered
-    fmt.Println("\n Success! No errors found.")
+    fmt.Println("\n success: No errors found")
 }
 
 // generates a cyclic pattern of specified length

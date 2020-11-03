@@ -8,12 +8,11 @@ import (
 
 // arguments taken by the fuzz command
 var (
-    host string
+    addr string
     port int
     step int
     wait int
-    pref string
-    suff string
+    tmpl string
 )
 
 // fuzz command definition
@@ -26,37 +25,36 @@ var Fuzz = &cobra.Command{
 // initialisation function for all arguments taken by the fuzz command
 func Init() {
     // host flag (required)
-    Fuzz.Flags().StringVarP(&host, "host", "H", "",
+    Fuzz.Flags().StringVarP(&addr, "addr", "a", "",
         "the target machine's IP address")
-    Fuzz.MarkFlagRequired("host")
+    Fuzz.MarkFlagRequired("addr")
 
     // port flag (required)
-    Fuzz.Flags().IntVarP(&port, "port", "P", 0,
+    Fuzz.Flags().IntVarP(&port, "port", "p", 0,
         "the port the target service is running on")
     Fuzz.MarkFlagRequired("port")
 
-    // prefix and suffix flags (optional)
-    Fuzz.Flags().StringVarP(&pref, "prefix", "p", "",
-        "(optional) prefix to put before payload")
-    Fuzz.Flags().StringVarP(&suff, "suffix", "s", "",
-        "(optional) suffix to put after payload")
-
     // step size flag (required)
-    Fuzz.Flags().IntVarP(&step, "step", "S", 0,
+    Fuzz.Flags().IntVarP(&step, "step", "s", 0,
         "the length by which each subsequent buffer is increased")
     Fuzz.MarkFlagRequired("step")
 
     // wait time flag (optional)
     Fuzz.Flags().IntVarP(&wait, "wait", "w", 1000,
         "(optional) the time to wait in between messages in milliseconds")
+
+    // template flag (optional)
+    Fuzz.Flags().StringVarP(&tmpl, "template", "t", "{payload}",
+        "(optional) template to format payload with, see docs for more info")
 }
 
 // fuzz command subroutine
 func fuzz(cmd *cobra.Command, args []string) {
     // print the title card
-    cli.FuzzTitle(host, port, step, wait)
+    cli.FuzzTitle(addr, port, step, wait)
 
     // run the fuzz functionality
-    overflow.Fuzz(host, port, step, wait, pref, suff)
+    f := overflow.NewFuzz(step, wait)
+    f.Run(overflow.NewHost(addr, port), tmpl)
 }
 

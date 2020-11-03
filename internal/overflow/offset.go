@@ -3,44 +3,67 @@ package overflow
 import (
     "fmt"
     "strings"
+    "errors"
 )
 
 // length of the cyclic pattern before it starts to repeat
 const maxPatternLen int = 20280
 
-// the main functionality of the offset subroutine 
-func Offset(query string, reverse bool, length int) {
+// contains offset subcommand specific parameters
+type Offset struct {
+    query   string
+    reverse bool
+    length  int
+}
+
+// creates a new offset object to store parameters
+func NewOffset(query string, reverse bool, length int) Offset {
+    return Offset{ query, reverse, length }
+}
+
+// the main functionality of the offset subcommand
+func (o Offset) Run() {
     // parse the bytes in the sub-pattern
-    fmt.Println(" > Parsing query.")
-    if len(query) != 16 {
-        fmt.Printf("\n Error! invalid query length '%s'\n", query)
-        return
-    }
-
-    // decode jump address
-    addr, err := parseHex(query)
+    fmt.Println(" > parsing query")
+    addr, err := o.DecodeQuery()
     if err != nil {
-        fmt.Printf("\n Error! invalid bytes in query '%s'\n", query)
+        fmt.Printf("\n error: %s\n", err)
         return
-    }
-
-    // reverse endianness if specified
-    if reverse {
-        reverseBytes(addr)
     }
 
     // attempt to find the pattern offset
-    fmt.Println(" > Searching for query within pattern.")
-    result := findSubPattern(string(addr), length)
+    fmt.Println(" > searching for query within pattern")
+    result := findSubPattern(string(addr), o.length)
 
     // if no pattern offset found, print error
     if result == -1 {
-        fmt.Println("\n Error! sub-pattern not found")
+        fmt.Println("\n error: sub-pattern not found")
         return
     }
 
     // otherwise, print the offset of the pattern
-    fmt.Printf("\n Success! Pattern offset is: %d\n", result)
+    fmt.Printf("\n success: pattern offset is: %d\n", result)
+}
+
+// decodes the query address
+func (o Offset) DecodeQuery() ([]byte, error) {
+    // check the length of the sub-pattern
+    if len(o.query) != 16 {
+        return nil, errors.New("bad query length")
+    }
+
+    // decode sub-pattern bytes
+    addr, err := parseHex(o.query)
+    if err != nil {
+        return nil, err
+    }
+
+    // reverse endianness if told to do so
+    if o.reverse {
+        reverseBytes(addr)
+    }
+
+    return addr, nil
 }
 
 // find the offset of the given sub-pattern

@@ -8,12 +8,11 @@ import (
 
 // arguments taken by the chars command
 var (
-    host    string
+    addr    string
     port    int
     offset  int
     exclude string
-    pref    string
-    suff    string
+    tmpl    string
 )
 
 // chars command definition
@@ -26,20 +25,14 @@ var Chars = &cobra.Command{
 // initialisation function for all arguments taken by the chars command
 func Init() {
     // host flag (required)
-    Chars.Flags().StringVarP(&host, "host", "H", "",
+    Chars.Flags().StringVarP(&addr, "addr", "a", "",
         "the target machine's IP address")
-    Chars.MarkFlagRequired("host")
+    Chars.MarkFlagRequired("addr")
 
     // port flag (required)
-    Chars.Flags().IntVarP(&port, "port", "P", 0,
+    Chars.Flags().IntVarP(&port, "port", "p", 0,
         "the port the target service is running on")
     Chars.MarkFlagRequired("port")
-
-    // prefix and suffix flags (optional)
-    Chars.Flags().StringVarP(&pref, "prefix", "p", "",
-        "(optional) prefix to put before payload")
-    Chars.Flags().StringVarP(&suff, "suffix", "s", "",
-        "(optional) suffix to put after payload")
 
     // offset flag (required)
     Chars.Flags().IntVarP(&offset, "offset", "o", 0,
@@ -49,14 +42,19 @@ func Init() {
     // exclude flag (optional)
     Chars.Flags().StringVarP(&exclude, "exclude", "e", "",
         "(optional) characters to exclude from payload")
+
+    // template flag (optional)
+    Chars.Flags().StringVarP(&tmpl, "template", "t", "{payload}",
+        "(optional) template to format payload with, see docs for more info")
 }
 
 // chars command subroutine
 func chars(cmd *cobra.Command, args []string) {
     // print the title card
-    cli.CharsTitle(host, port, offset, exclude)
+    cli.CharsTitle(addr, port, offset, exclude)
 
     // run the chars functionality
-    overflow.Chars(host, port, offset, exclude, pref, suff)
+    c := overflow.NewChars(offset, exclude)
+    c.Run(overflow.NewHost(addr, port), tmpl)
 }
 

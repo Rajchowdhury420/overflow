@@ -5,38 +5,84 @@ import (
     "net"
     "time"
     "strings"
-    "encoding/hex"
+    "errors"
 )
 
 // timeout used for connection and I/O
-const timeout time.Duration = 3000000000
+const timeout time.Duration = 5000000000
 
-// creates a payload to send to the target service
-func createPayload(data []byte, pref, suff string) []byte {
-    // build payload
-    ret := append([]byte(pref), data...)
-    return append(ret, []byte(suff)...)
+// struct used to contain host information
+type Host struct {
+    addr string
+    port int
 }
 
-// send a payload to the target service
-func sendPayload(host string, port int, payload []byte) error {
-    // build uri for target service
-    target := fmt.Sprintf("%s:%d", host, port)
+// struct used to contain payload data and templates
+type Payload struct {
+    data []byte
+    tmpl string
+}
 
+// creates a new host struct
+func NewHost(addr string, port int) Host {
+    return Host{ addr, port }
+}
+
+// converts the host struct to string in the format "addr:port"
+func (h Host) ToString() string {
+    return fmt.Sprintf("%s:%d", h.addr, h.port)
+}
+
+// sends a payload to the target host
+func (h Host) SendPayload(payload Payload) error {
     // connect to target service
-    conn, err := net.DialTimeout("tcp", target, timeout)
+    conn, err := net.DialTimeout("tcp", h.ToString(), timeout)
     if err != nil {
         return err
     }
     defer conn.Close()
 
-    // set I/O timeout
+    // set i/o timeout
     if err = conn.SetDeadline(time.Now().Add(timeout)); err != nil {
         return err
     }
 
-    // send payload to target service
-    if _, err = conn.Write(payload); err != nil {
+    // apply the template to the payload
+    data, err := payload.ApplyTemplate()
+    if err != nil {
+        return err
+    }
+
+    // split payload up into individual messages and send them
+    msgs := strings.Split(string(data), "<CR>")
+    for i, msg := range msgs {
+        // what about messages that don't end in <RT>, i.e the last message
+        if msg != "" && i == len(msgs) - 1 {
+            if err = h.SendData(conn, []byte(msg)); err != nil {
+                return err
+            }
+
+            break
+        }
+
+        // or 'foo<ENTER>', where the last message is ''
+        if msg == "" && i == len(msgs) - 1 {
+            break
+        }
+
+        // normal message
+        if err = h.SendData(conn, []byte(msg + "\r\n")); err != nil {
+            return err
+        }
+    }
+
+    return nil
+}
+
+// send bytes to the target host
+func (h Host) SendData(conn net.Conn, data []byte) error {
+    // send data to target service
+    if _, err := conn.Write(data); err != nil {
         return err
     }
 
@@ -46,43 +92,23 @@ func sendPayload(host string, port int, payload []byte) error {
         return err
     }
 
-    // payload was sent successfully
     return nil
 }
 
-// builds a byte array of length n, populated a byte of choice
-func generateBytes(b byte, length int) []byte {
-    // instantiate the empty byte array
-    data := make([]byte, length)
-
-    // populate the byte array with 0x41 characters
-    for i := 0; i < length; i++ {
-        data[i] = b
-    }
-
-    return data
+// get the size of the payload in bytes
+func (p Payload) Size() int {
+    return len(p.data)
 }
 
-// parses a string of hex chars in the format "\x01\x02\x03"
-func parseHex(exclude string) ([]byte, error) {
-    // convert string to format "010203"
-    bytes := strings.Split(exclude, "\\x")
-    hexstr := strings.Join(bytes[:], "")
-
-    // parse hex string
-    data, err := hex.DecodeString(hexstr)
-    if err != nil {
-        return nil, err
+// apply payload template to payload data
+func (p Payload) ApplyTemplate() ([]byte, error) {
+    // check that payload exists
+    if !strings.Contains(p.tmpl, "{payload}") {
+        return nil, errors.New("template does not contain '{payload}'")
     }
 
-    return data, nil
-}
-
-// reverses a given bytearray
-func reverseBytes(bytes []byte) {
-    // ...
-    for i, j := 0, len(bytes) - 1; i < j; i, j = i + 1, j - 1 {
-        bytes[i], bytes[j] = bytes[j], bytes[i]
-    }
+    // apply payload to template
+    ret := strings.Replace(p.tmpl, "{payload}", string(p.data), 1)
+    return []byte(ret), nil
 }
 

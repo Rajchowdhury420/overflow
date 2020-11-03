@@ -35,7 +35,7 @@ func Init() {
     Fuzz.MarkFlagRequired("port")
 
     // step size flag (required)
-    Fuzz.Flags().IntVarP(&step, "step", "S", 0,
+    Fuzz.Flags().IntVarP(&step, "step", "s", 0,
         "the length by which each subsequent buffer is increased")
     Fuzz.MarkFlagRequired("step")
 

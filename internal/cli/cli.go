@@ -22,8 +22,7 @@ var title = `
 
         Fig. 1 Process Memory Regions
  
- v2.0.0
- by Stephen Radley          github.com/sradley
+ github.com/sradley                     v2.0.0
 ───────────────────────────────────────────────`
 
 // default arguments template
@@ -47,6 +46,7 @@ var pattern = `
 
 // offset command specific arguments template
 var offset = `
+  . mode                : offset
   . (-q|--query)        : "%s"
   . (-r|--reverse)      : %t
   . (-l|--length)       : %d

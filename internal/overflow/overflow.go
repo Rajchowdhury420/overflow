@@ -54,9 +54,9 @@ func (h Host) SendPayload(payload Payload) error {
     }
 
     // ...
-    msgs := strings.Split(string(data), "<ENTER>")
+    msgs := strings.Split(string(data), "<CR>")
     for i, msg := range msgs {
-        // what about messages that don't end in <ENTER>, i.e the last message
+        // what about messages that don't end in <RT>, i.e the last message
         if msg != "" && i == len(msgs) - 1 {
             if err = h.SendData(conn, []byte(msg)); err != nil {
                 return err

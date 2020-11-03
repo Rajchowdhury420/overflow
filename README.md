@@ -171,7 +171,7 @@ $ overflow ... --template "OVERFLOW1 {payload}"
 ```
 
 ### Special Characters
-The only special character of note (and currently supported) is the "<CR>"
+The only special character of note (and currently supported) is the `<CR>`
 special character. Not only does it insert `\r\n`, but the tool treats it as
 the end of a message.
 
@@ -182,7 +182,7 @@ Message:  <user-input>
 ```
 
 But the buffer overflow is in the "message" part of the service. A template to
-exploit this would be: `"stephen<CR>{payload}<CR>". Resulting in an information
+exploit this would be: `stephen<CR>{payload}<CR>`. Resulting in an information
 flow kind of like this:
 ```
 Username: stephen

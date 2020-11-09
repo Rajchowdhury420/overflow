@@ -33,6 +33,11 @@ func (h Host) ToString() string {
     return fmt.Sprintf("%s:%d", h.addr, h.port)
 }
 
+// checks if a host struct is incomplete (i.e. missing host or port)
+func (h Host) Incomplete() bool {
+    return h.addr == "" || h.port == 0
+}
+
 // sends a payload to the target host
 func (h Host) SendPayload(payload Payload) error {
     // connect to target service

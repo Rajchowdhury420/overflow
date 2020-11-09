@@ -105,7 +105,9 @@ The `pattern` subcommand streamlines the process of generating a cyclic pattern
 of bytes and sending it to the target service. Turning what is normally an
 annoying multi-step process into a single command.
 
-The required flags are "addr", "port" and "length".
+The only required flag is "length". If you specify an address and port, it'll
+send it to the target service as per usual, however, if you omit the address
+and port the pattern will just be printed to stdout.
 ```
 $ overflow pattern (-a|--addr ADDR) (-p|--port PORT) (-l|--length LENGTH) [flags]
 ```
@@ -282,6 +284,50 @@ You can see the pattern sent in the `netcat` output below.
 $ nc -lvp 4444
 Connection from 127.0.0.1:48870
 Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac
+```
+
+If you choose not to specify a host or a port, this is what the output will
+look like.
+```
+$ overflow pattern -l 500
+```
+```
+            /------------------\  lower
+            |                  |  memory
+            |       Text       |  addresses
+            |                  |
+            |------------------|
+            |   (Initialized)  |
+            |        Data      |
+            |  (Uninitialized) |
+            |------------------|
+            |                  |
+            |       Stack      |  higher
+            |                  |  memory
+            \------------------/  addresses
+
+        Fig. 1 Process Memory Regions
+ 
+ github.com/sradley                     v2.0.0
+───────────────────────────────────────────────
+  . mode                : pattern
+  . (-a|--addr)         : 
+  . (-p|--port)         : 0
+  . (-l|--length)       : 500
+───────────────────────────────────────────────
+ > generating pattern
+
+Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab
+5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0A
+d1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6
+Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag
+2Ag3Ag4Ag5Ag6Ag7Ag8Ag9Ah0Ah1Ah2Ah3Ah4Ah5Ah6Ah7A
+h8Ah9Ai0Ai1Ai2Ai3Ai4Ai5Ai6Ai7Ai8Ai9Aj0Aj1Aj2Aj3
+Aj4Aj5Aj6Aj7Aj8Aj9Ak0Ak1Ak2Ak3Ak4Ak5Ak6Ak7Ak8Ak
+9Al0Al1Al2Al3Al4Al5Al6Al7Al8Al9Am0Am1Am2Am3Am4A
+m5Am6Am7Am8Am9An0An1An2An3An4An5An6An7An8An9Ao0
+Ao1Ao2Ao3Ao4Ao5Ao6Ao7Ao8Ao9Ap0Ap1Ap2Ap3Ap4Ap5Ap
+6Ap7Ap8Ap9Aq0Aq1Aq2Aq3Aq4Aq5Aq
 ```
 
 ### Getting the Offset from a Cyclic Pattern <a name="example-offset"></a>

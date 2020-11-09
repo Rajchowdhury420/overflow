@@ -23,15 +23,13 @@ var Pattern = &cobra.Command{
 
 // initialisation function for all arguments taken by the pattern command
 func Init() {
-    // host flag (required)
+    // host flag (optional)
     Pattern.Flags().StringVarP(&addr, "addr", "a", "",
-        "the target machine's IP address")
-    Pattern.MarkFlagRequired("addr")
+        "(optional) the target machine's IP address")
 
-    // port flag (required)
+    // port flag (optional)
     Pattern.Flags().IntVarP(&port, "port", "p", 0,
-        "the port the target service is running on")
-    Pattern.MarkFlagRequired("port")
+        "(optional) the port the target service is running on")
 
     // length flag (required)
     Pattern.Flags().IntVarP(&length, "length", "l", 0,

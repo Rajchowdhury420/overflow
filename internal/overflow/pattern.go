@@ -21,6 +21,18 @@ func (p Pattern) Run(host Host, tmpl string) {
     fmt.Println(" > generating pattern")
     data := cyclicPattern(p.length)
 
+    // if no host or port specified, just print the pattern
+    if host.Incomplete() {
+        // some pretty formatting
+        d := string(data)
+        for i := 47; i < len(d); i += 48 {
+            d = d[:i] + "\n" + d[i:]
+        }
+
+        fmt.Printf("\n%s\n", d)
+        return
+    }
+
     // build payload
     fmt.Println(" > building payload")
     payload := Payload{ data, tmpl }
@@ -34,7 +46,7 @@ func (p Pattern) Run(host Host, tmpl string) {
     }
 
     // notify user that the payload was successfully delivered
-    fmt.Println("\n success: No errors found")
+    fmt.Println("\n success: no errors found")
 }
 
 // generates a cyclic pattern of specified length

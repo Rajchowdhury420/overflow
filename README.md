@@ -154,6 +154,7 @@ an easy way to do so.
 
 Required flags are "addr", "port", "offset", "jump" and "shell". Where shell is
 the path to your desired payload.
+
 ```
 $ overflow exploit (-a|--addr ADDR) (-p|--port PORT) (-o|--offset OFFSET) \
     (-j|--jump JUMP) (-s|--shell SHELL) [flags]
@@ -219,7 +220,7 @@ $ overflow fuzz -a 127.0.0.1 -p 4444 -s 100
             \------------------/  addresses
 
         Fig. 1 Process Memory Regions
- 
+
  github.com/sradley                     v2.0.0
 ───────────────────────────────────────────────
   . mode                : fuzz
@@ -264,7 +265,7 @@ $ overflow pattern -a 127.0.0.1 -p 4444 -l 65
             \------------------/  addresses
 
         Fig. 1 Process Memory Regions
- 
+
  github.com/sradley                     v2.0.0
 ───────────────────────────────────────────────
   . mode                : pattern
@@ -429,7 +430,7 @@ $ overflow chars -a 127.0.0.1 -p 4444 -o 160 -e "\x00\x41\xAB\x01"
             \------------------/  addresses
 
         Fig. 1 Process Memory Regions
- 
+
  github.com/sradley                     v2.0.0
 ───────────────────────────────────────────────
   . mode                : chars
@@ -442,7 +443,7 @@ $ overflow chars -a 127.0.0.1 -p 4444 -o 160 -e "\x00\x41\xAB\x01"
  > generating characters
  > building payload
  > sending 416-byte payload 
- 
+
  success: no errors found
 ```
 

@@ -31,6 +31,7 @@ func Init() {
     Pattern.Flags().IntVarP(&port, "port", "p", 0,
         "(optional) the port the target service is running on")
 
+
     // length flag (required)
     Pattern.Flags().IntVarP(&length, "length", "l", 0,
         "the length of the cyclic pattern sent to the target")
